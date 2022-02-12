@@ -2,8 +2,8 @@
 
 echo "Starting worker..."
 
-celery -A rosrzhombnadzor worker -l INFO &
+celery -A app worker -l INFO &
 
 echo "Starting beat..." &
 
-celery -A rosrzhombnadzor beat -l INFO
+celery -A app beat -l INFO
