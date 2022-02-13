@@ -36,7 +36,6 @@ __pycache__/
 # Distribution / packaging
 creds.json
 .Python
-data/
 env/
 build/
 develop-eggs/
