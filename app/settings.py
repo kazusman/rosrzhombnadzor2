@@ -160,15 +160,13 @@ JAZZMIN_SETTINGS = {
     "site_icon": "jazzmin/img/favicon.ico",
     "welcome_sign": "Добро пожаловать в РосРжомбНадзор",
     "copyright": 'РЖАКА РЖОМБА РЖУЛЬКА',
-    "user_avatar": None,
+    "user_avatar": 'jazzmin/img/logo.png',
     "search_model": None,
     "topmenu_links": [
 
         {"name": "Home",  "url": "/admin"},
 
         {"name": "Open bot", "url": os.getenv('BOT_URL'), "new_window": True},
-
-        {"name": "Open chat", "url": os.getenv('CHAT_URL'), "new_window": True},
 
         {"name": 'Set webhook', "url": f"/bot/set_webhook/"},
 
