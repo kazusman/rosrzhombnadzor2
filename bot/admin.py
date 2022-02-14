@@ -95,9 +95,6 @@ class MessageAdmin(admin.ModelAdmin):
         'created_at'
     )
 
-    readonly_fields = (
-        'created_at',
-    )
 
 
 @admin.register(NotFoundAnswer)

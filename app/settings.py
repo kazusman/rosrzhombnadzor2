@@ -16,6 +16,10 @@ DEBUG = int(os.getenv('DEBUG'))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
+
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split()
+
 INSTALLED_APPS = [
     'jazzmin.apps.JazzminConfig',
     'django.contrib.admin',
@@ -94,7 +98,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 CHAT_ID = int(os.getenv('CHAT_ID'))
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
@@ -124,10 +130,7 @@ GOOGLE_CREDENTIALS_FILE_PATH = os.path.join(BASE_DIR, 'creds.json')
 
 def create_google_credentials_file():
 
-    if os.path.exists(GOOGLE_CREDENTIALS_FILE_PATH):
-        return
-    else:
-        with open(GOOGLE_CREDENTIALS_FILE_PATH, 'w') as file:
+    with open(GOOGLE_CREDENTIALS_FILE_PATH, 'w') as file:
             json.dump(GMAIL_CREDENTIALS, file)
 
 
