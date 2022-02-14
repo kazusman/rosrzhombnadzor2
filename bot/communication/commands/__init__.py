@@ -23,3 +23,9 @@ def bet_command(message: types.Message):
 def random_command(message: types.Message):
 
     CommandProcessor(message).process_random_command()
+
+
+@bot.message_handler(commands=['anek'])
+def anek_command(message: types.Message):
+
+    CommandProcessor(message).process_anek_command()

@@ -1,3 +1,6 @@
+import requests
+import json
+
 from bot.service import ActionProcessor
 from bot.models import *
 from bot.service import text
@@ -55,3 +58,18 @@ class CommandProcessor(ActionProcessor):
     def process_random_command(self):
         random_message: Message = choice(Message.objects.filter(message_type='photo'))
         self.bot.forward_message(self.chat_id, self.chat_id, random_message.message_id)
+
+    def process_anek_command(self):
+        api_endpoint = 'http://rzhunemogu.ru/RandJSON.aspx?CType=1'
+        response = requests.get(api_endpoint)
+        if response.status_code == 200:
+            anek = response.text[12:-2]
+            # Я не совсем долбаёб и мог бы получить JSON ответа и по ключу content достать анек. Но блять API
+            # с анеками возвращает не JSON, а строку, которая только похожа на JSON. Я её конвертировал, но
+            # постоянно встречаются анеки без экранированных символов и json.loads посылает меня в пизду
+            # Я честно пытался отэкранировать все символы вручную, но постоянно вылезали какие-нибудь слэши или
+            # кавычки, которые я заёбся отлавливать. Поэтому я достаю анек из среза строки с 12 символа до
+            # пред-предпосленего (фактически отрезаю от строки часть {"content": в начале и "} конце. Мне похуй
+            self.bot.send_message(self.chat_id, anek)
+        else:
+            self.bot.send_message(self.chat_id, text.API_DOES_NOT_WORK.format(response.status_code))
