@@ -103,6 +103,7 @@ class TextProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, text.CALL_TARGET_USER.format(
                 bet.user.username, bet.bet_target_user.username, get_readable_balance(bet.amount)
             ), reply_markup=reply_markup)
+            self.update_status('rzhomber')
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
 
