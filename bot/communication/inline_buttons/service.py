@@ -39,7 +39,8 @@ class InlineProcessor(ActionProcessor):
         self._add_target_user_to_bet(target_user, bet)
         self.update_status(f'waiting_bet_amount:{bet.id}')
         self.bot.edit_message_text(text.SEND_AMOUNT.format(
-            get_readable_balance(self.database_user.coins)
+            get_readable_balance(self.database_user.coins), target_user.username,
+            get_readable_balance(target_user.coins)
         ), self.chat_id, self.message_id)
 
     def process_haha_call(self):

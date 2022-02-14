@@ -92,6 +92,9 @@ class TextProcessor(ActionProcessor):
             if float_amount > self.database_user.coins:
                 self.bot.send_message(self.chat_id, text.TOO_MUCH)
                 return
+            elif float_amount > bet.bet_target_user.coins:
+                self.bot.send_message(self.chat_id, text.TOO_MUCH_TARGET.format(bet.bet_target_user.username))
+                return
             elif float_amount == 0:
                 self.bot.send_message(self.chat_id, text.ZERO_NOT_ALLOWED)
                 return
