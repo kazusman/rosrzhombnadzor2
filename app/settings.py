@@ -21,7 +21,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split()
 
 INSTALLED_APPS = [
-    #'jazzmin.apps.JazzminConfig',
+    'jazzmin.apps.JazzminConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
