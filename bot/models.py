@@ -326,3 +326,29 @@ class Bet(models.Model):
 
     def __str__(self):
         return f'{self.user} | {self.bet_target_user}'
+
+
+class Anekdot(models.Model):
+
+    anek = models.TextField(
+        unique=True,
+        verbose_name='Anekdot'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Created at'
+    )
+
+    @property
+    def anek_preview(self):
+        return truncatechars(self.anek, 50)
+
+    anek_preview.fget.short_description = 'Anek preview'
+
+    class Meta:
+        verbose_name = 'Anekdot'
+        verbose_name_plural = 'Anekdots'
+
+    def __str__(self):
+        return self.anek_preview

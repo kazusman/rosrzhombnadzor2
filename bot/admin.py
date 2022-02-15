@@ -165,3 +165,18 @@ class BetAdmin(admin.ModelAdmin):
     readonly_fields = (
         'created_at',
     )
+
+
+@admin.register(Anekdot)
+class AnekdotAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'id',
+        'anek_preview'
+    )
+
+    list_display_links = list_display
+
+    readonly_fields = (
+        'created_at',
+    )

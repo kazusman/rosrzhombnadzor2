@@ -133,6 +133,14 @@ class BotUser(BotChat):
             status=status
         )
 
+    def switch_deleted_status(self, deleted_status: bool, user: Optional[User] = None):
+        if user is None:
+            self.database_user.is_deleted = deleted_status
+            self.database_user.save()
+        else:
+            user.is_deleted = deleted_status
+            user.save()
+
 
 class ActionProcessor(BotUser):
 

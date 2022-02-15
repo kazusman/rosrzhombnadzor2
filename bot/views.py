@@ -5,7 +5,7 @@ from bot.config import bot
 from django.conf import settings
 from telebot import types  # noqa
 from bot.communication import audios, commands, documents, photos, stickers, text_messages, video_notes  # noqa
-from bot.communication import videos, voices, animations, inline_buttons, new_chat_member  # noqa
+from bot.communication import videos, voices, animations, inline_buttons, chat_member  # noqa
 
 
 def set_webhook(_) -> HttpResponseRedirect:

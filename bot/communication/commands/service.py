@@ -70,5 +70,6 @@ class CommandProcessor(ActionProcessor):
             # кавычки, которые я заёбся отлавливать. Поэтому я достаю анек из среза строки с 12 символа до
             # пред-предпосленего (фактически отрезаю от строки часть {"content": в начале и "} конце. Мне похуй
             self.bot.send_message(self.chat_id, anek)
+            Anekdot.objects.get_or_create(anek=anek)
         else:
             self.bot.send_message(self.chat_id, text.API_DOES_NOT_WORK.format(response.status_code))
