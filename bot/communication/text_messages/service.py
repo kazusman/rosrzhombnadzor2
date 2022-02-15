@@ -84,25 +84,10 @@ class TextProcessor(ActionProcessor):
         bet.amount = float(self.amount)
         bet.save()
 
-    def _is_valid(self) -> bool:
-
-        """
-        Защита от Сергия Ваняшина
-        """
-
-        amount = self.message_text.replace(' ', '').replace(',', '.')
-        if '.' in amount:
-            if len(amount.split('.')[1]) > 2:
-                return False
-        return True
-
     def _process_bet_amount(self):
         bet_id = int(self.status.split(':')[1])
-        if not self._is_valid():
-            self.bot.send_message(self.chat_id, text.GO_FUCK_YOURSELF)
-            return
         if self._is_float():
-            float_amount = float(self.amount)
+            float_amount = round(float(self.amount), 2)
             bet = Bet.objects.get(id=bet_id)
             if float_amount > self.database_user.coins:
                 self.bot.send_message(self.chat_id, text.TOO_MUCH)
