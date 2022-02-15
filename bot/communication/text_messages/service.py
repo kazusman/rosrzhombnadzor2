@@ -62,13 +62,13 @@ class TextProcessor(ActionProcessor):
         if len(possible_messages) > 75:
             self.bot.send_message(self.chat_id, text.TOO_MANY_RESULTS)
 
-        elif len(possible_messages) > 0:
+        elif 75 >= len(possible_messages) > 0:
             message_list = self._create_list_of_founded_messages(possible_messages)
             self.bot.send_message(self.chat_id, message_list, parse_mode='HTML')
 
         else:
             not_found_answer: str = choice(NotFoundAnswer.objects.all()).text
-            self.bot.send_message(self.chat_id, not_found_answer)
+            self.bot.send_message(self.chat_id, not_found_answer, parse_mode='HTML')
 
         self.update_status('rzhomber')
 

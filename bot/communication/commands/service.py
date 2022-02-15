@@ -41,7 +41,7 @@ class CommandProcessor(ActionProcessor):
 
     def process_start_command(self):
         message_text: str = choice(StartAnswer.objects.all()).answer
-        self.bot.send_message(self.chat_id, message_text)
+        self.bot.send_message(self.chat_id, message_text, parse_mode='HTML')
 
     def process_search_command(self):
         self.update_status('search_meme')
