@@ -14,6 +14,7 @@ class UserAdmin(admin.ModelAdmin):
         'coins',
         'created_at',
         'date_of_birth',
+        'is_deleted',
     )
 
     list_display_links = list_display
@@ -25,6 +26,7 @@ class UserAdmin(admin.ModelAdmin):
         'last_name',
         'coins',
         'created_at',
+        'is_deleted'
     )
 
     readonly_fields = (
@@ -95,6 +97,9 @@ class MessageAdmin(admin.ModelAdmin):
         'created_at'
     )
 
+    readonly_fields = (
+        'created_at',
+    )
 
 
 @admin.register(NotFoundAnswer)
