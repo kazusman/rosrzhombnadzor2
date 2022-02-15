@@ -1,5 +1,4 @@
 import requests
-import json
 
 from bot.service import ActionProcessor
 from bot.models import *
