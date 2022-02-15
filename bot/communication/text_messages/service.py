@@ -91,7 +91,7 @@ class TextProcessor(ActionProcessor):
         """
 
         amount = self.message_text.replace(' ', '').replace(',', '.')
-        if '.' in self.message_text:
+        if '.' in amount:
             if len(amount.split('.')[1]) > 2:
                 return False
         return True
