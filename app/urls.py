@@ -5,5 +5,5 @@ from app.views import health_check
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('bot/', include('bot.urls')),
-    path('healtcheck/', health_check)
+    path('healthcheck/', health_check)
 ]
