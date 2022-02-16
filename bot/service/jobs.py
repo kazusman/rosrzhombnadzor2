@@ -1,6 +1,6 @@
 from bot.models import User, Bet
 from bot.config import bot
-from bot.service import get_years_decade, get_readable_balance
+from bot.service import get_years_decade, get_readable_balance, text
 from django.conf import settings
 from datetime import datetime, timedelta
 from pytz import timezone
@@ -40,5 +40,5 @@ def send_daily_stat():
         users = User.objects.filter(is_deleted=False).order_by('coins')
         for user in users:
             stat_text += f'{user.username}: {get_readable_balance(user.coins)}\n'
-        bot.send_message(settings.CHAT_ID, stat_text)
+        bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
 
