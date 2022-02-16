@@ -32,4 +32,4 @@ def not_haha_call(call: types.CallbackQuery):
 @bot.callback_query_handler(func=lambda call: call_data(call) == 'decline')
 def decline_call(call: types.CallbackQuery):
 
-    InlineProcessor(call)
+    InlineProcessor(call).process_decline_bet()
