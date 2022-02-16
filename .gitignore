@@ -48,6 +48,7 @@ parts/
 sdist/
 var/
 *.egg-info/
+data
 .installed.cfg
 *.egg
 
