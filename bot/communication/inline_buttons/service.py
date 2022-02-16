@@ -2,6 +2,9 @@ from bot.service import ActionProcessor, text, get_readable_balance
 from bot.models import User, Bet
 from typing import Union
 from telebot import types  # noqa
+from datetime import datetime
+from pytz import timezone
+from django.conf import settings
 
 
 class InlineProcessor(ActionProcessor):
@@ -21,6 +24,11 @@ class InlineProcessor(ActionProcessor):
         self.database_user.save()
         bet.user.coins = author_amount
         bet.user.save()
+
+    @staticmethod
+    def _decline_bet(bet: Bet):
+        bet.is_declined, bet.declined_at = True, datetime.now(timezone(settings.TIME_ZONE))
+        bet.save()
 
     @staticmethod
     def _close_bet(bet: Bet, is_funny: bool):
@@ -72,3 +80,13 @@ class InlineProcessor(ActionProcessor):
                 bet.user.username, get_readable_balance(bet.user.coins), self.database_user.username,
                 get_readable_balance(self.database_user.coins)
             ), self.chat_id, self.message_id)
+
+    def process_decline_bet(self):
+        bet_id = int(self.call_data.split(':')[1])
+        bet = Bet.objects.get(id=bet_id)
+        if self.database_user != bet.user:
+            self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
+        else:
+            self._decline_bet(bet)
+            self.bot.edit_message_text(self.message_text + text.BET_DECLINED, self.chat_id, self.message_id)
+

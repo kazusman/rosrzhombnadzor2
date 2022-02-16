@@ -27,3 +27,9 @@ def haha_call(call: types.CallbackQuery):
 def not_haha_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_not_haha_call()
+
+
+@bot.callback_query_handler(func=lambda call: call_data(call) == 'decline')
+def decline_call(call: types.CallbackQuery):
+
+    InlineProcessor(call)

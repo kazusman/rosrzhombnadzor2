@@ -27,4 +27,5 @@ class Markup:
             InlineKeyboardButton('Прикол работает', callback_data=f'haha:{bet_id}'),
             InlineKeyboardButton('Не поржал', callback_data=f'not_haha:{bet_id}')
         )
+        markup.add(InlineKeyboardButton('Отменить', callback_data=f'decline:{bet_id}'))
         return markup

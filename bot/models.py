@@ -320,6 +320,17 @@ class Bet(models.Model):
         null=True
     )
 
+    is_declined = models.BooleanField(
+        default=False,
+        verbose_name='Is declined?',
+        choices=settings.BOOLEAN_CHOICES
+    )
+
+    declined_at = models.DateTimeField(
+        verbose_name='Declined at',
+        null=True
+    )
+
     class Meta:
         verbose_name = 'Bet'
         verbose_name_plural = 'Bets'

@@ -150,7 +150,8 @@ class BetAdmin(admin.ModelAdmin):
         'bet_target_user',
         'amount',
         'is_funny',
-        'created_at'
+        'created_at',
+        'is_declined'
     )
 
     list_display_links = list_display
@@ -159,7 +160,8 @@ class BetAdmin(admin.ModelAdmin):
         'user',
         'bet_target_user',
         'is_funny',
-        'created_at'
+        'created_at',
+        'is_declined'
     )
 
     readonly_fields = (
