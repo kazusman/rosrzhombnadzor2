@@ -10,43 +10,19 @@ class TextAnalyzer:
         self.chat_id = chat_id
         self.message_id = message_id
 
-    def _is_word_match_position(self, word_position, trigger_word):
-        if word_position == 'start':
-            if self.message_text.lower().startswith(trigger_word):
-                return True
-            else:
-                return False
-        elif word_position == 'clean_start':
-            if self.message_text.lower().startswith(f'{trigger_word} '):
-                return True
-            else:
-                return False
-        elif word_position == 'end':
-            if self.message_text.lower().endswith(trigger_word):
-                return True
-            else:
-                return False
-        elif word_position == 'clean_end':
-            if self.message_text.lower().endswith(f' {trigger_word}'):
-                return True
-            else:
-                return False
-        elif word_position == 'any':
-            if trigger_word.lower() in self.message_text.lower():
-                return True
-            else:
-                return False
-        elif word_position == 'all':
-            if trigger_word.lower() == self.message_text.lower():
-                return True
-            else:
-                return False
+    def _is_word_match_position(self, word_position, trigger_word) -> bool:
+        word_position_matching_rules = {
+            'start': self.message_text.lower().startswith(trigger_word),
+            'clean_start': self.message_text.lower().startswith(f'{trigger_word} '),
+            'end': self.message_text.lower().endswith(trigger_word),
+            'clean_end': self.message_text.lower().endswith(f' {trigger_word}'),
+            'any': trigger_word.lower() in self.message_text.lower(),
+            'all': trigger_word.lower() == self.message_text.lower()
+        }
+        return word_position_matching_rules[word_position]
 
-    def _is_case_sensitive_passed(self, trigger_word):
-        if trigger_word in self.message_text:
-            return True
-        else:
-            return False
+    def _is_case_sensitive_passed(self, trigger_word) -> bool:
+        return trigger_word in self.message_text
 
     def _communicate(self, action):
         message_id = self.message_id if action.is_need_to_reply else None
