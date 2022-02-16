@@ -166,6 +166,7 @@ class BetAdmin(admin.ModelAdmin):
 
     readonly_fields = (
         'created_at',
+        'message'
     )
 
 
