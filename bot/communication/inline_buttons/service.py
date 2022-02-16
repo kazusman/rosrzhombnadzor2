@@ -90,3 +90,11 @@ class InlineProcessor(ActionProcessor):
             self._decline_bet(bet)
             self.bot.edit_message_text(self.message_text + text.BET_DECLINED, self.chat_id, self.message_id)
 
+    def process_already_haha(self):
+        bet_id = int(self.call_data.split(':')[1])
+        bet = Bet.objects.get(id=bet_id)
+        if self.database_user != bet.bet_target_user:
+            self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
+        else:
+            self._decline_bet(bet)
+            self.bot.edit_message_text(self.message_text + text.ALREADY_HAHA, self.chat_id, self.message_id)
