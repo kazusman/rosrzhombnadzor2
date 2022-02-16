@@ -131,7 +131,7 @@ GOOGLE_CREDENTIALS_FILE_PATH = os.path.join(BASE_DIR, 'creds.json')
 def create_google_credentials_file():
 
     with open(GOOGLE_CREDENTIALS_FILE_PATH, 'w') as file:
-            json.dump(GMAIL_CREDENTIALS, file)
+        json.dump(GMAIL_CREDENTIALS, file)
 
 
 create_google_credentials_file()
@@ -148,7 +148,11 @@ CELERY_BEAT_SCHEDULE = {
     'happy_birthday': {
         'task': 'bot.tasks.send_happy_birthday',
         'schedule': crontab(hour=10, minute=30)
-    }
+    },
+    'daily_stat': {
+        'task': 'bot.tasks.daily_stat',
+        'schedule': crontab(hour=0, minute=0)
+    },
 }
 
 # Jazzmin settings
