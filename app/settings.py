@@ -147,7 +147,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'happy_birthday': {
         'task': 'bot.tasks.send_happy_birthday',
-        'schedule': crontab(hour=12, minute=0)
+        'schedule': crontab(hour=10, minute=30)
     }
 }
 
