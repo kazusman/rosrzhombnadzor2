@@ -10,5 +10,5 @@ docker-compose exec web ./prestart.sh
 
 echo "MIGRATED AND COLLECTED. RUNNING CELERY BEAT AND WORKER"
 
-docker-compose exec web ./rabbit.sh
+docker-compose exec -d web ./rabbit.sh
 
