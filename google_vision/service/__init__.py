@@ -4,6 +4,7 @@ import json
 
 from google.cloud import vision_v1  # noqa
 from google.cloud.vision_v1 import types, AnnotateImageResponse  # noqa
+from google.api_core.exceptions import ClientError  # noqa
 from google_vision.models import Request
 from django.conf import settings
 from bot.models import Message

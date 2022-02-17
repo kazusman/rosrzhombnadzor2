@@ -1,12 +1,13 @@
 import os
 
-from bot.service import ActionProcessor
+from bot.service import ActionProcessor, text
 from bot.models import Message
 from bot.service.funny_answer import TextAnalyzer
 from typing import Union, Optional
 from telebot import types  # noqa
 from django.conf import settings
 from google_vision.service import VisionAPI
+from google.api_core.exceptions import ClientError  # noqa
 
 
 class PhotoProcessor(ActionProcessor):
@@ -68,7 +69,13 @@ class PhotoProcessor(ActionProcessor):
         self.photo_md5_hash = self.get_md5_hash(photo_bytes)
         self._check_boyan_or_not()
         message = self.save_message(content_hash=self.photo_md5_hash, message_text=self.action.caption)
-        text_on_image = self._get_image_from_text(message)
+        try:
+            text_on_image = self._get_image_from_text(message)
+        except ClientError as error:
+            text_on_image = ''
+            self.bot.send_message(self.chat_id, text.GOOGLE_API_ERROR.format(
+                error.__class__.__name__, error
+            ))
         if text_on_image != '':
             self._add_text_from_image(message, text_on_image)
             TextAnalyzer(text_on_image, self.chat_id, self.message_id)
