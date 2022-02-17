@@ -37,7 +37,7 @@ def send_daily_stat():
     yesterday_bets = Bet.objects.filter(created_at__gt=yesterday_datetime, created_at__lt=current_datetime)
     if len(yesterday_bets) != 0:
         stat_text = ''
-        users = User.objects.filter(is_deleted=False).order_by('coins')
+        users = User.objects.filter(is_deleted=False).order_by('-coins')
         for user in users:
             stat_text += f'{user.username}: {get_readable_balance(user.coins)}\n'
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
