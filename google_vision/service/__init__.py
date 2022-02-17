@@ -26,11 +26,8 @@ class VisionAPI:
 
     @staticmethod
     def _refactor_text(texts: list) -> str:
-        text = ''
-        for i in texts:
-            text += i.description
-            break
-        text = text.replace('\n', ' ')
+
+        text = texts[0].description.replace('\n', ' ')
         while True:
             if text.count('  ') > 0:
                 text = text.replace('  ', ' ')
