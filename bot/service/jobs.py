@@ -41,4 +41,3 @@ def send_daily_stat():
         for user in users:
             stat_text += f'{user.username}: {get_readable_balance(user.coins)}\n'
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
-

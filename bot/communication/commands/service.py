@@ -26,7 +26,9 @@ class CommandProcessor(ActionProcessor):
         except ObjectDoesNotExist:
             self.bot.send_message(self.chat_id, text.NO_MESSAGE_IN_DATABASE)
             return
-        users = User.objects.filter(~Q(telegram_id=self.telegram_id), is_deleted=False, coins__gte=0)
+        users = User.objects.filter(
+            ~Q(telegram_id=self.telegram_id), is_deleted=False, coins__gte=0
+        ).order_by('username')
         if len(users) == 0:
             self.bot.send_message(self.chat_id, text.POOR_USERS)
             return
