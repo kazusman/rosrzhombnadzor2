@@ -1,6 +1,6 @@
 FROM python:3.9.6-slim
 
-RUN apt-get update && apt-get -y install libpq-dev gcc ffmpeg libsm6 libxext6 -y
+RUN apt-get update && apt-get -y install libpq-dev gcc ffmpeg libsm6 libxext6
 
 WORKDIR /usr/src/app
 
