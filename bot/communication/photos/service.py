@@ -54,16 +54,6 @@ class PhotoProcessor(ActionProcessor):
                                   'CAACAgIAAxkBAAEC9ulhUFSQn9kzOsyj2BHlARmo2JIO1QAC2g0AAjBJoEgRIA2_DLK51iEE',
                                   reply_to_message_id=message.message_id)
 
-    @staticmethod
-    def _get_image_from_text(message: Message) -> str:
-        vision_api = VisionAPI(message)
-        return vision_api.get_text_from_photo()
-
-    @staticmethod
-    def _add_text_from_image(message: Message, text_on_image: str):
-        message.text_on_image = text_on_image
-        message.save()
-
     def process_photo_message(self):
         photo_bytes = self._download_photo()
         self.photo_md5_hash = self.get_md5_hash(photo_bytes)

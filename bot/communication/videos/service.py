@@ -1,4 +1,9 @@
+import os
+import cv2
+
+from django.conf import settings
 from bot.service import ActionProcessor
+from bot.models import Message
 from typing import Union
 from telebot import types  # noqa
 
@@ -11,6 +16,32 @@ class VideoProcessor(ActionProcessor):
 
     def __init__(self, action: Union[types.Message, types.CallbackQuery]):
         super().__init__(action)
+        self.downloaded_video_path = os.path.join(settings.BASE_DIR, 'bot', 'communication',
+                                                  'videos', 'downloaded_files', 'video.mp4')
+        self.first_frame_saved_destination = os.path.join(settings.BASE_DIR, 'bot', 'communication', 'photos',
+                                                          'downloaded_files', 'image.jpg')
+
+    def _extract_first_frame(self):
+        video = cv2.VideoCapture(self.downloaded_video_path)
+        _, frame = video.read()
+        cv2.imwrite(self.first_frame_saved_destination, frame)
+        return
+
+    def _save_video(self) -> bool:
+        if self.action.video.file_size > 20000000:
+            return False
+        else:
+            video_id = self.action.video.file_id
+            file_path = self.bot.get_file(video_id).file_path
+            file_bytes = self.bot.download_file(file_path)
+            with open(self.downloaded_video_path, 'wb') as file:
+                file.write(file_bytes)
+            self._extract_first_frame()
+            return True
 
     def process_video_message(self):
-        self.save_message()
+        database_message = self.save_message()
+        if self._save_video():
+            text_on_image = self._get_image_from_text(database_message)
+            self._add_text_from_image(database_message, text_on_image)
+

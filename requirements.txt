@@ -5,6 +5,7 @@ cachetools==5.0.0
 celery==5.2.3
 certifi==2021.10.8
 charset-normalizer==2.0.11
+click==8.0.4
 click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.2.0
@@ -19,6 +20,8 @@ grpcio-status==1.43.0
 gunicorn==20.1.0
 idna==3.3
 kombu==5.2.3
+numpy==1.22.2
+opencv-python==4.5.5.62
 prompt-toolkit==3.0.28
 proto-plus==1.20.0
 protobuf==3.19.4

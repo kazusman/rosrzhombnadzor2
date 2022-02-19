@@ -7,6 +7,7 @@ from bot.config import bot
 from bot.service.markup import Markup
 from bot.service.decorators import check_chat
 from datetime import datetime
+from google_vision.service import VisionAPI
 
 
 def user_status(telegram_id: int) -> Optional[str]:
@@ -163,6 +164,16 @@ class ActionProcessor(BotUser):
         md5_hash.update(file_bytes)
         digest = md5_hash.hexdigest()
         return digest
+
+    @staticmethod
+    def _get_image_from_text(message: Message) -> str:
+        vision_api = VisionAPI(message)
+        return vision_api.get_text_from_photo()
+
+    @staticmethod
+    def _add_text_from_image(message: Message, text_on_image: str):
+        message.text_on_image = text_on_image
+        message.save()
 
     def save_message(self, content_hash: Optional[str] = None, message_text: Optional[str] = None,
                      text_on_image: Optional[str] = None) -> Message:
