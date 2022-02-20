@@ -166,12 +166,12 @@ class ActionProcessor(BotUser):
         return digest
 
     @staticmethod
-    def _get_image_from_text(message: Message) -> str:
+    def get_text_from_image(message: Message) -> str:
         vision_api = VisionAPI(message)
         return vision_api.get_text_from_photo()
 
     @staticmethod
-    def _add_text_from_image(message: Message, text_on_image: str):
+    def add_text_from_image(message: Message, text_on_image: str):
         message.text_on_image = text_on_image
         message.save()
 

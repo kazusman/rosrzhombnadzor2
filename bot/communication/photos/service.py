@@ -60,14 +60,14 @@ class PhotoProcessor(ActionProcessor):
         self._check_boyan_or_not()
         message = self.save_message(content_hash=self.photo_md5_hash, message_text=self.action.caption)
         try:
-            text_on_image = self._get_image_from_text(message)
+            text_on_image = self.get_text_from_image(message)
         except ClientError as error:
             text_on_image = ''
             self.bot.send_message(self.chat_id, text.GOOGLE_API_ERROR.format(
                 error.__class__.__name__, error
             ))
         if text_on_image != '':
-            self._add_text_from_image(message, text_on_image)
+            self.add_text_from_image(message, text_on_image)
             TextAnalyzer(text_on_image, self.chat_id, self.message_id)
             return
         if self.caption is not None:
