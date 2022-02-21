@@ -192,6 +192,8 @@ class Message(models.Model):
 
     @property
     def content_text_preview(self):
+        if self.text_on_image is None:
+            return '-'
         return truncatechars(self.text_on_image, 50)
 
     content_text_preview.fget.short_description = 'Content text preview'
