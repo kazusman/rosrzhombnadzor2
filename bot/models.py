@@ -190,6 +190,12 @@ class Message(models.Model):
         null=True
     )
 
+    @property
+    def content_text_preview(self):
+        return truncatechars(self.text_on_image, 50)
+
+    content_text_preview.fget.short_description = 'Content text preview'
+
     class Meta:
         verbose_name = 'Message'
         verbose_name_plural = 'Messages'

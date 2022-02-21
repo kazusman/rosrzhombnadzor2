@@ -85,7 +85,8 @@ class MessageAdmin(admin.ModelAdmin):
         'message_type',
         'is_forwarded',
         'created_at',
-        'message_id'
+        'message_id',
+        'content_text_preview'
     )
 
     list_display_links = list_display
