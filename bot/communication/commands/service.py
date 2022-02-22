@@ -52,7 +52,7 @@ class CommandProcessor(ActionProcessor):
         if self.action.reply_to_message is None:
             self.bot.send_message(self.chat_id, text.NEED_TO_REPLY)
         elif self.database_user.coins == 0:
-            self.bot.send_message(self.chat_id, text.ZERO_BALANCE)
+            self.bot.send_video(self.chat_id, 'BAACAgIAAxkBAAIB7mIVbGncrQIXBcuBMSAU_jGh9QU2AALiFAACvF2oSLdJ9sPtm4XfIwQ')
         else:
             self._create_bet()
 
