@@ -6,7 +6,6 @@ from bot.service.funny_answer import TextAnalyzer
 from typing import Union, Optional
 from telebot import types  # noqa
 from django.conf import settings
-from google_vision.service import VisionAPI
 from google.api_core.exceptions import ClientError  # noqa
 
 
@@ -58,7 +57,8 @@ class PhotoProcessor(ActionProcessor):
         photo_bytes = self._download_photo()
         self.photo_md5_hash = self.get_md5_hash(photo_bytes)
         self._check_boyan_or_not()
-        message = self.save_message(content_hash=self.photo_md5_hash, message_text=self.action.caption)
+        message = self.save_message(content_hash=self.photo_md5_hash, message_text=self.action.caption,
+                                    file_id=self.action.photo[-1].file_id)
         try:
             text_on_image = self.get_text_from_image(message)
         except ClientError as error:

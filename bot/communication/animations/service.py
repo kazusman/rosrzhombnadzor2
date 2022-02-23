@@ -13,4 +13,4 @@ class AnimationProcessor(ActionProcessor):
         super().__init__(action)
 
     def process_animation_message(self):
-        self.save_message()
+        self.save_message(file_id=self.action.animation.file_id)

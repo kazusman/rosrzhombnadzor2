@@ -3,7 +3,6 @@ import cv2
 
 from django.conf import settings
 from bot.service import ActionProcessor
-from bot.models import Message
 from typing import Union
 from telebot import types  # noqa
 
@@ -40,8 +39,7 @@ class VideoProcessor(ActionProcessor):
             return True
 
     def process_video_message(self):
-        database_message = self.save_message()
+        database_message = self.save_message(file_id=self.action.video.file_id)
         if self._save_video():
             text_on_image = self.get_text_from_image(database_message)
             self.add_text_from_image(database_message, text_on_image)
-

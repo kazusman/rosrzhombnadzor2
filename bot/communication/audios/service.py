@@ -13,4 +13,4 @@ class AudioProcessor(ActionProcessor):
         super().__init__(action)
 
     def process_audio_message(self):
-        self.save_message()
+        self.save_message(file_id=self.action.audio.file_id)

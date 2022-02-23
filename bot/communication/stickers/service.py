@@ -13,4 +13,4 @@ class StickerProcessor(ActionProcessor):
         super().__init__(action)
 
     def process_sticker_message(self):
-        self.save_message()
+        self.save_message(file_id=self.action.sticker.file_id)

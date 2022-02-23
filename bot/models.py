@@ -181,6 +181,12 @@ class Message(models.Model):
         null=True
     )
 
+    file_id = models.CharField(
+        verbose_name='File ID',
+        max_length=128,
+        null=True
+    )
+
     message_id = models.IntegerField(
         verbose_name='Message ID'
     )

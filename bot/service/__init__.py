@@ -176,7 +176,7 @@ class ActionProcessor(BotUser):
         message.save()
 
     def save_message(self, content_hash: Optional[str] = None, message_text: Optional[str] = None,
-                     text_on_image: Optional[str] = None) -> Message:
+                     text_on_image: Optional[str] = None, file_id: Optional[str] = None) -> Message:
         return Message.objects.create(
             user=self.database_user,
             message_type=self.message_type,
@@ -184,5 +184,6 @@ class ActionProcessor(BotUser):
             message_text=message_text,
             content_hash=content_hash,
             message_id=self.message_id,
-            text_on_image=text_on_image
+            text_on_image=text_on_image,
+            file_id=file_id
         )
