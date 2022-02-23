@@ -51,7 +51,7 @@ class CommandProcessor(ActionProcessor):
         if message.file_id is None:
             self.bot.send_message(self.chat_id, text.FILE_ID_DOES_NOT_EXIST)
             return
-        self.bot.send_message(self.chat_id, message.file_id)
+        self.bot.send_message(self.chat_id, f'<code>{message.file_id}</code>', parse_mode='HTML')
 
     def process_start_command(self):
         message_text: str = choice(StartAnswer.objects.all()).answer
