@@ -40,6 +40,19 @@ class CommandProcessor(ActionProcessor):
             bot_message_id=new_message.id
         )
 
+    def _get_file_id(self):
+        try:
+            message = Message.objects.get(
+                message_id=self.action.reply_to_message.message_id
+            )
+        except ObjectDoesNotExist:
+            self.bot.send_message(self.chat_id, text.FILE_ID_NO_MESSAGE)
+            return
+        if message.file_id is None:
+            self.bot.send_message(self.chat_id, text.FILE_ID_DOES_NOT_EXIST)
+            return
+        self.bot.send_message(self.chat_id, message.file_id)
+
     def process_start_command(self):
         message_text: str = choice(StartAnswer.objects.all()).answer
         self.bot.send_message(self.chat_id, message_text, parse_mode='HTML')
@@ -64,3 +77,9 @@ class CommandProcessor(ActionProcessor):
     def process_anek_command(self):
         anek: Anekdot = choice(Anekdot.objects.all()).anek
         self.bot.send_message(self.chat_id, anek)
+
+    def process_file_id_command(self):
+        if self.action.reply_to_message is None:
+            self.bot.send_message(self.chat_id, text.FILE_ID_NEED_TO_REPLY)
+            return
+        self._get_file_id()

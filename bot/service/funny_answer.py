@@ -25,7 +25,7 @@ class TextAnalyzer:
         return trigger_word in self.message_text
 
     def _communicate(self, action):
-        message_id = self.message_id if action.is_need_to_reply else None
+        reply_to_message_id = self.message_id if action.is_need_to_reply else None
         if action.is_interpolation_needed:
             if action.answer_text.count('{}') != 1:
                 return
@@ -35,7 +35,7 @@ class TextAnalyzer:
             answer_text = action.answer_text
         if randint(1, 100) <= action.answer_probability:
             bot.send_message(self.chat_id, answer_text,
-                             reply_to_message_id=message_id,
+                             reply_to_message_id=reply_to_message_id,
                              disable_notification=action.is_need_to_send_quiet)
 
     def _get_rules(self, actions: list[FunnyAction]):

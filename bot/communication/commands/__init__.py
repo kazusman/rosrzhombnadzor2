@@ -29,3 +29,9 @@ def random_command(message: types.Message):
 def anek_command(message: types.Message):
 
     CommandProcessor(message).process_anek_command()
+
+
+@bot.message_handler(commands=['file_id'])
+def file_id_command(message: types.Message):
+
+    CommandProcessor(message).process_file_id_command()
