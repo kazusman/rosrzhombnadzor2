@@ -264,7 +264,9 @@ class FunnyAction(models.Model):
     )
 
     answer_text = models.TextField(
-        verbose_name='Answer text'
+        verbose_name='Answer text',
+        null=True,
+        blank=True
     )
 
     file_id = models.CharField(
