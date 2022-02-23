@@ -30,6 +30,18 @@ WORD_POSITION_CHOICES = [
     ('any', 'В любом месте')
 ]
 
+ANSWER_TYPES = [
+    ('text', 'Text'),
+    ('photo', 'Photo'),
+    ('video', 'Video'),
+    ('audio', 'Audio'),
+    ('sticker', 'Sticker'),
+    ('document', 'Document'),
+    ('voice', 'Voice'),
+    ('animation', 'GIF'),
+    ('video_note', 'Video note')
+]
+
 
 def percent_probability_validator(value):
     if 1 > value > 100:
@@ -244,8 +256,22 @@ class FunnyAction(models.Model):
         verbose_name='Trigger word'
     )
 
+    answer_type = models.CharField(
+        verbose_name='Answer type',
+        max_length=32,
+        default='text',
+        choices=ANSWER_TYPES
+    )
+
     answer_text = models.TextField(
         verbose_name='Answer text'
+    )
+
+    file_id = models.CharField(
+        verbose_name='File ID',
+        max_length=128,
+        null=True,
+        blank=True
     )
 
     is_interpolation_needed = models.BooleanField(
