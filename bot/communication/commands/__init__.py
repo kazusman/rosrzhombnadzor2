@@ -40,4 +40,4 @@ def file_id_command(message: types.Message):
 @bot.message_handler(commands=['stat'])
 def stat_command(message: types.Message):
 
-    CommandProcessor(message)
+    CommandProcessor(message).process_stat_command()
