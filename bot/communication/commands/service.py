@@ -103,5 +103,5 @@ class CommandProcessor(ActionProcessor):
         users = User.objects.filter(is_deleted=False).order_by('username')
         donate = self._create_donate()
         self.update_status(f'donate_id:{donate.id}')
-        reply_markup = self.markup.donate_user_list(users, donate.id)
+        reply_markup = self.markup.donate_user_list(users)
         self.bot.send_message(self.chat_id, text.SELECT_MONEY_RECEIVER, reply_markup=reply_markup)
