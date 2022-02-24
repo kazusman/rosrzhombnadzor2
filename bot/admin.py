@@ -184,3 +184,27 @@ class AnekdotAdmin(admin.ModelAdmin):
     readonly_fields = (
         'created_at',
     )
+
+
+@admin.register(Donate)
+class DonateAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'id',
+        'from_user',
+        'to_user',
+        'amount',
+        'created_at'
+    )
+
+    list_display_links = list_display
+
+    list_filter = (
+        'from_user',
+        'to_user',
+        'created_at'
+    )
+
+    readonly_fields = (
+        'created_at',
+    )

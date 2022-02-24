@@ -41,3 +41,9 @@ def file_id_command(message: types.Message):
 def stat_command(message: types.Message):
 
     CommandProcessor(message).process_stat_command()
+
+
+@bot.message_handler(commands=['donate'])
+def donate_command(message: types.Message):
+
+    CommandProcessor(message).process_donate_command()

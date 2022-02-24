@@ -32,12 +32,17 @@ class CommandProcessor(ActionProcessor):
         if len(users) == 0:
             self.bot.send_message(self.chat_id, text.POOR_USERS)
             return
-        reply_markup = self.markup.user_list(users)
+        reply_markup = self.markup.bet_user_list(users)
         new_message = self.bot.send_message(self.chat_id, text.SELECT_TARGET_USER, reply_markup=reply_markup)
         Bet.objects.create(
             user=self.database_user,
             message=message,
             bot_message_id=new_message.id
+        )
+
+    def _create_donate(self) -> Donate:
+        return Donate.objects.create(
+            from_user=self.database_user
         )
 
     def _get_file_id(self):
@@ -90,3 +95,13 @@ class CommandProcessor(ActionProcessor):
         for user in users:
             stat_text += f'{user.username}: {get_readable_balance(user.coins)}\n'
         self.bot.send_message(self.chat_id, text.DAILY_STAT.format(stat_text))
+
+    def process_donate_command(self):
+        if self.database_user.coins == 0:
+            self.bot.send_message(self.chat_id, text.DONATE_ZERO_BALANCE)
+            return
+        users = User.objects.filter(is_deleted=False).order_by('username')
+        donate = self._create_donate()
+        self.update_status(f'donate_id:{donate.id}')
+        reply_markup = self.markup.donate_user_list(users, donate.id)
+        self.bot.send_message(self.chat_id, text.SELECT_MONEY_RECEIVER, reply_markup=reply_markup)

@@ -1,5 +1,5 @@
 from bot.service import ActionProcessor, text, get_readable_balance
-from bot.models import User, Bet
+from bot.models import User, Bet, Donate
 from typing import Union
 from telebot import types  # noqa
 from datetime import datetime
@@ -39,6 +39,11 @@ class InlineProcessor(ActionProcessor):
     def _add_target_user_to_bet(target_user: User, bet: Bet):
         bet.bet_target_user = target_user
         bet.save()
+
+    @staticmethod
+    def _add_donate_to_user(donate_to_user: User, donate: Donate):
+        donate.to_user = donate_to_user
+        donate.save()
 
     def process_bet_target_user(self):
         target_user_id = int(self.action.data.split(':')[1])
@@ -98,3 +103,16 @@ class InlineProcessor(ActionProcessor):
         else:
             self._decline_bet(bet)
             self.bot.edit_message_text(self.message_text + text.ALREADY_HAHA, self.chat_id, self.message_id)
+
+    def process_to_donate_call(self):
+        donate_to_user_id = int(self.call_data.split(':')[1])
+        donate_to_user = User.objects.get(id=donate_to_user_id)
+        donate_id = int(self.status.split(':')[1])
+        donate = Donate.objects.get(id=donate_id)
+        if self.database_user != donate.from_user:
+            self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
+            return
+        self._add_donate_to_user(donate_to_user, donate)
+        self.update_status(f'donate_amount:{donate_id}')
+        self.bot.edit_message_text(text.SEND_DONATE_AMOUNT.format(get_readable_balance(self.database_user.coins)),
+                                   self.chat_id, self.message_id)

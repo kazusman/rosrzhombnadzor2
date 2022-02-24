@@ -1,3 +1,5 @@
+import tkinter.ttk
+
 from bot.service import ActionProcessor, text, get_readable_balance
 from bot.models import *
 from typing import Union
@@ -109,11 +111,26 @@ class TextProcessor(ActionProcessor):
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
 
+    def _process_donate_amount(self):
+        if self._is_float():
+            float_amount = round(float(self.amount), 2)
+            donate_id = int(self.status.split(':')[1])
+            donate = Donate.objects.get(id=donate_id)
+            donate.amount, donate.to_user.coins, donate.from_user.coins = \
+                float_amount, donate.to_user.coins + float_amount, donate.from_user.coins - float_amount
+            donate.save()
+            self.update_status('rzhomber')
+            self.bot.send_message(self.chat_id, text.DONATE_FINISHED.format(
+                 get_readable_balance(donate.from_user.coins), get_readable_balance(donate.to_user.coins)
+             ))
+
     def process_text_message(self):
         if self.status == 'search_meme':
             self._process_search_meme()
         elif 'waiting_bet_amount' in self.status:
             self._process_bet_amount()
+        elif 'donate_amount' in self.status:
+            self._process_donate_amount()
         else:
             self.save_message(message_text=self.message_text)
             TextAnalyzer(self.message_text, self.chat_id, self.message_id).analyze()

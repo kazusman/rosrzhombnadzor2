@@ -39,3 +39,9 @@ def decline_call(call: types.CallbackQuery):
 def already_haha_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_already_haha()
+
+
+@bot.callback_query_handler(func=lambda call: call_data(call) == 'to_user_donate')
+def to_user_donate_call(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_to_donate_call()

@@ -9,7 +9,7 @@ class Markup:
         self.user = user
 
     @staticmethod
-    def user_list(users: QuerySet[User]) -> InlineKeyboardMarkup:
+    def bet_user_list(users: QuerySet[User]) -> InlineKeyboardMarkup:
 
         markup = InlineKeyboardMarkup()
         markup.row_width = 2
@@ -30,5 +30,16 @@ class Markup:
         markup.add(
             InlineKeyboardButton('Отменить', callback_data=f'decline:{bet_id}'),
             InlineKeyboardButton('Уже видел', callback_data=f'already_haha:{bet_id}')
+        )
+        return markup
+
+    @staticmethod
+    def donate_user_list(users: QuerySet[User], user_id: int) -> InlineKeyboardMarkup:
+        markup = InlineKeyboardMarkup()
+        markup.row_width = 2
+        markup.add(
+            *[
+                InlineKeyboardButton(user.username, callback_data=f'donate_to_user:{user.id}') for user in users
+            ]
         )
         return markup

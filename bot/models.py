@@ -405,3 +405,37 @@ class Anekdot(models.Model):
 
     def __str__(self):
         return self.anek_preview
+
+
+class Donate(models.Model):
+
+    from_user = models.ForeignKey(
+        to=User,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name='From user'
+    )
+
+    to_user = models.ForeignKey(
+        to=User,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name='To user',
+        related_name='to_user',
+        null=True
+    )
+
+    amount = models.FloatField(
+        verbose_name='Amount',
+        null=True
+    )
+
+    created_at = models.DateTimeField(
+        verbose_name='Created at',
+        auto_now_add=True
+    )
+
+    class Meta:
+        verbose_name = 'Donate'
+        verbose_name_plural = 'Donates'
+
+    def __str__(self):
+        return f'{self.from_user} to {self.to_user}'
