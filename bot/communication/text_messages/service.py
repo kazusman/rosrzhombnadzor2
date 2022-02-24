@@ -1,5 +1,3 @@
-import tkinter.ttk
-
 from bot.service import ActionProcessor, text, get_readable_balance
 from bot.models import *
 from typing import Union
