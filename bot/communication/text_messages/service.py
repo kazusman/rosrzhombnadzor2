@@ -109,17 +109,29 @@ class TextProcessor(ActionProcessor):
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
 
+    def _provide_donate_amounts(self, donate: Donate, float_amount: float):
+        donate.amount, donate.to_user.coins, donate.from_user.coins = \
+            float_amount, donate.to_user.coins + float_amount, donate.from_user.coins - float_amount
+        donate.save()
+        donate.to_user.save()
+        donate.from_user.save()
+
     def _process_donate_amount(self):
         if self._is_float():
             float_amount = round(float(self.amount), 2)
+            if float_amount <= 0:
+                self.bot.send_message(self.chat_id, text.DONATE_ZERO_AMOUNT)
+                return
+            if float_amount > self.database_user.coins:
+                self.bot.send_message(self.chat_id, text.DONATE_TOO_MUCH_AMOUNT)
+                return
             donate_id = int(self.status.split(':')[1])
             donate = Donate.objects.get(id=donate_id)
-            donate.amount, donate.to_user.coins, donate.from_user.coins = \
-                float_amount, donate.to_user.coins + float_amount, donate.from_user.coins - float_amount
-            donate.save()
+            self._provide_donate_amounts(donate, float_amount)
             self.update_status('rzhomber')
             self.bot.send_message(self.chat_id, text.DONATE_FINISHED.format(
-                 get_readable_balance(donate.from_user.coins), get_readable_balance(donate.to_user.coins)
+                get_readable_balance(donate.from_user.coins), donate.to_user.username,
+                get_readable_balance(donate.to_user.coins)
              ))
 
     def process_text_message(self):

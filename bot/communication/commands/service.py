@@ -100,7 +100,7 @@ class CommandProcessor(ActionProcessor):
         if self.database_user.coins == 0:
             self.bot.send_message(self.chat_id, text.DONATE_ZERO_BALANCE)
             return
-        users = User.objects.filter(is_deleted=False).order_by('username')
+        users = User.objects.filter(~Q(telegram_id=self.telegram_id), is_deleted=False).order_by('username')
         donate = self._create_donate()
         self.update_status(f'donate_id:{donate.id}')
         reply_markup = self.markup.donate_user_list(users)
