@@ -1,6 +1,6 @@
 import requests
 
-from bot.service import ActionProcessor
+from bot.service import ActionProcessor, get_readable_balance
 from bot.models import *
 from bot.service import text
 from typing import Union
@@ -27,7 +27,7 @@ class CommandProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, text.NO_MESSAGE_IN_DATABASE)
             return
         users = User.objects.filter(
-            ~Q(telegram_id=self.telegram_id), is_deleted=False, coins__gte=0
+            ~Q(telegram_id=self.telegram_id), is_deleted=False, coins__gt=0
         ).order_by('username')
         if len(users) == 0:
             self.bot.send_message(self.chat_id, text.POOR_USERS)
@@ -83,3 +83,10 @@ class CommandProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, text.FILE_ID_NEED_TO_REPLY)
             return
         self._get_file_id()
+
+    def process_stat_command(self):
+        users = User.objects.filter(is_deleted=False).order_by('-coins')
+        stat_text = ''
+        for user in users:
+            stat_text += f'{user.username}: {get_readable_balance(user.coins)}\n'
+        self.bot.send_message(self.chat_id, text.DAILY_STAT.format(stat_text))

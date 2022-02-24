@@ -35,3 +35,9 @@ def anek_command(message: types.Message):
 def file_id_command(message: types.Message):
 
     CommandProcessor(message).process_file_id_command()
+
+
+@bot.message_handler(commands=['stat'])
+def stat_command(message: types.Message):
+
+    CommandProcessor(message)
