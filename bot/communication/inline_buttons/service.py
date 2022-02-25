@@ -112,6 +112,9 @@ class InlineProcessor(ActionProcessor):
         if self.database_user != donate.from_user:
             self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
             return
+        if 'donate_id' not in self.status:
+            self.bot.answer_callback_query(self.call_id, text.DONATE_ROTTEN, True)
+            return
         self._add_donate_to_user(donate_to_user, donate)
         self.update_status(f'donate_amount:{donate_id}')
         self.bot.edit_message_text(text.SEND_DONATE_AMOUNT.format(get_readable_balance(self.database_user.coins)),
