@@ -108,8 +108,10 @@ class TextProcessor(ActionProcessor):
             self.update_status('rzhomber')
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
+            self.update_status('rzhomber')
 
-    def _provide_donate_amounts(self, donate: Donate, float_amount: float):
+    @staticmethod
+    def _provide_donate_amounts(donate: Donate, float_amount: float):
         donate.amount, donate.to_user.coins, donate.from_user.coins = \
             float_amount, donate.to_user.coins + float_amount, donate.from_user.coins - float_amount
         donate.save()
@@ -133,6 +135,9 @@ class TextProcessor(ActionProcessor):
                 get_readable_balance(donate.from_user.coins), donate.to_user.username,
                 get_readable_balance(donate.to_user.coins)
              ))
+        else:
+            self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
+            self.update_status('rzhomber')
 
     def process_text_message(self):
         if self.status == 'search_meme':
