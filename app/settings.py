@@ -202,6 +202,8 @@ JAZZMIN_SETTINGS = {
         "bot.bet": "fas fa-dice",
         "bot.notfoundanswer": "fas fa-question",
         "bot.startanswer": "fas fa-play",
+        "bot.donate": "fas fa-donate",
+        "bot.anekdot": "fas fa-grin-wink",
         "bot.status": "fas fa-link",
         "google_vision": "fab fa-google",
         "google_vision.request": "fas fa-globe"
