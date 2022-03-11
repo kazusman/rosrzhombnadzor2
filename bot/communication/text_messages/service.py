@@ -46,7 +46,11 @@ class TextProcessor(ActionProcessor):
         messages_list = 'Кое-что нарыл:\n\n'
         russian_message_types = {'photo': 'Картинка', 'video': 'Видео'}
         for i, message in enumerate(messages, 1):
-            messages_list += f'{i}. <a href="{settings.CHAT_URL}/{message.message_id}">' \
+            if i < 10:
+                spaces = '  '
+            else:
+                spaces = ' '
+            messages_list += f'<code>{i}.{spaces}</code><a href="{settings.CHAT_URL}/{message.message_id}">' \
                              f'{russian_message_types[message.message_type]}</a> от ' \
                              f'{self._get_readable_date(message.created_at)}\n'
         return messages_list
