@@ -2,7 +2,7 @@
 
 echo "STARTING SERVICES"
 
-docker-compose up -d --force-recreate --build
+sudo docker-compose up -d --force-recreate --build
 
 echo "SERVICES ARE UP, MIGRATING AND COLLECTING STATIC"
 
