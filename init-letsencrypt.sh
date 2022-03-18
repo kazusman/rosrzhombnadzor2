@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(launchbot.ru www.launchbot.ru)
+domains=(rosrzhombnadzor.com www.rosrzhombnadzor.com)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="p.a.anokhin@gmail.com"
