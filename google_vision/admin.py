@@ -22,3 +22,10 @@ class RequestAdmin(admin.ModelAdmin):
         'created_at',
         'message'
     )
+
+
+@admin.register(RecognitionType)
+class RecognitionTypeAdmin(admin.ModelAdmin):
+
+    list_display = ('id', 'type', 'is_main')
+    list_display_links = list_display

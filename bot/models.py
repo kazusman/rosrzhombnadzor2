@@ -208,6 +208,13 @@ class Message(models.Model):
         null=True
     )
 
+    recognition_type = models.CharField(
+        max_length=32,
+        null=True,
+        blank=True,
+        verbose_name='Recognition type'
+    )
+
     @property
     def content_text_preview(self):
         if self.text_on_image is None:

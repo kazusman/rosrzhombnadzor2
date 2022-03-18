@@ -166,13 +166,13 @@ class ActionProcessor(BotUser):
         return digest
 
     @staticmethod
-    def get_text_from_image(message: Message) -> str:
+    def get_text_from_image(message: Message) -> tuple:
         vision_api = VisionAPI(message)
         return vision_api.get_text_from_photo()
 
     @staticmethod
-    def add_text_from_image(message: Message, text_on_image: str):
-        message.text_on_image = text_on_image
+    def add_text_from_image(message: Message, text_on_image: str, recognition_type: str):
+        message.text_on_image, message.recognition_type = text_on_image, recognition_type
         message.save()
 
     def save_message(self, content_hash: Optional[str] = None, message_text: Optional[str] = None,

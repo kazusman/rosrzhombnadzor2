@@ -47,3 +47,9 @@ def stat_command(message: types.Message):
 def donate_command(message: types.Message):
 
     CommandProcessor(message).process_donate_command()
+
+
+@bot.message_handler(commands=['switch_vision_recognition'])
+def switch_vision_recognition_command(message: types.Message):
+
+    CommandProcessor(message).process_switch_vision_recognition()

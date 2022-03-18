@@ -34,3 +34,24 @@ class Request(models.Model):
 
     def __str__(self):
         return self.response_preview
+
+
+class RecognitionType(models.Model):
+
+    type = models.CharField(
+        max_length=32,
+        verbose_name='Type'
+    )
+
+    is_main = models.BooleanField(
+        verbose_name='Is main?',
+        default=False,
+        choices=settings.BOOLEAN_CHOICES
+    )
+
+    class Meta:
+        verbose_name = 'Recognition type'
+        verbose_name_plural = 'Recognition types'
+
+    def __str__(self):
+        return f'{self.type} | {self.is_main}'

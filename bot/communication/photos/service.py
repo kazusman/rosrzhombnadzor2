@@ -60,14 +60,15 @@ class PhotoProcessor(ActionProcessor):
         message = self.save_message(content_hash=self.photo_md5_hash, message_text=self.action.caption,
                                     file_id=self.action.photo[-1].file_id)
         try:
-            text_on_image = self.get_text_from_image(message)
+            recognition_type, text_on_image = self.get_text_from_image(message)
         except ClientError as error:
+            recognition_type = None
             text_on_image = ''
             self.bot.send_message(self.chat_id, text.GOOGLE_API_ERROR.format(
                 error.__class__.__name__, error
             ))
         if text_on_image != '':
-            self.add_text_from_image(message, text_on_image)
+            self.add_text_from_image(message, text_on_image, recognition_type)
             TextAnalyzer(text_on_image, self.chat_id, self.message_id)
             return
         if self.caption is not None:

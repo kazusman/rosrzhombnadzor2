@@ -3,6 +3,7 @@ import requests
 from bot.service import ActionProcessor, get_readable_balance
 from bot.models import *
 from bot.service import text
+from google_vision.models import RecognitionType
 from typing import Union
 from telebot import types  # noqa
 from random import choice
@@ -105,3 +106,18 @@ class CommandProcessor(ActionProcessor):
         self.update_status(f'donate_id:{donate.id}')
         reply_markup = self.markup.donate_user_list(users)
         self.bot.send_message(self.chat_id, text.SELECT_MONEY_RECEIVER, reply_markup=reply_markup)
+
+    def process_switch_vision_recognition(self):
+        readable_recognition_type = {
+            'google': 'Google',
+            'local': 'Tesseract'
+        }
+        recognition_types = RecognitionType.objects.all()
+        current_main_type = recognition_types.get(is_main=True)
+        current_non_main_type = recognition_types.get(is_main=False)
+        self.bot.send_message(self.chat_id, text.RECOGNITION_TYPE_CHANGE.format(
+            readable_recognition_type[current_non_main_type.type]))
+        current_main_type.is_main = False
+        current_non_main_type.is_main = True
+        current_main_type.save()
+        current_non_main_type.save()

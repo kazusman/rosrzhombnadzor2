@@ -41,5 +41,5 @@ class VideoProcessor(ActionProcessor):
     def process_video_message(self):
         database_message = self.save_message(file_id=self.action.video.file_id)
         if self._save_video():
-            text_on_image = self.get_text_from_image(database_message)
-            self.add_text_from_image(database_message, text_on_image)
+            recognition_type, text_on_image = self.get_text_from_image(database_message)
+            self.add_text_from_image(database_message, text_on_image, recognition_type)
