@@ -64,6 +64,20 @@ class CommandProcessor(ActionProcessor):
             return
         self.bot.send_message(self.chat_id, f'<code>{message.file_id}</code>', parse_mode='HTML')
 
+    def _create_demotivator_with_avatar(self):
+        profile_photos = self.bot.get_user_profile_photos(self.telegram_id)
+        if profile_photos.total_count == 0:
+            self.bot.send_message(self.chat_id, text.CANNOT_MAKE_DEMOTIVATOR)
+        else:
+            file_id = profile_photos.photos[0][-1].file_id
+            file_path = self.bot.get_file(file_id).file_path
+            file_bytes = self.bot.download_file(file_path)
+            with open(self.downloaded_file_path, 'wb') as image:
+                image.write(file_bytes)
+        demotivator_path = DemotivatorMaker(self.downloaded_file_path).create_demotivator()
+        with open(demotivator_path, 'rb') as demotivator:
+            self.bot.send_photo(self.chat_id, demotivator)
+
     def process_start_command(self):
         message_text: str = choice(StartAnswer.objects.all()).answer
         self.bot.send_message(self.chat_id, message_text, parse_mode='HTML')
@@ -129,13 +143,11 @@ class CommandProcessor(ActionProcessor):
 
     def process_demotivator_command(self):
         if self.action.reply_to_message is None:
-            self.bot.send_message(self.chat_id, text.FILE_ID_NEED_TO_REPLY)
-            return
+            self._create_demotivator_with_avatar()
         message = self.bot.forward_message(settings.PARSER_CHAT_ID, self.chat_id,
                                            self.action.reply_to_message.message_id)
         if message.content_type != 'photo':
-            self.bot.send_message(self.chat_id, text.MESSAGE_IS_NOT_PHOTO)
-            return
+            self._create_demotivator_with_avatar()
         self.download_photo(message)
         demotivator_path = DemotivatorMaker(self.downloaded_file_path).create_demotivator()
         with open(demotivator_path, 'rb') as demotivator:
