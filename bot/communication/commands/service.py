@@ -50,7 +50,6 @@ class CommandProcessor(ActionProcessor):
             return Message.objects.get(
                 message_id=self.action.reply_to_message.message_id
             )
-
         except ObjectDoesNotExist:
             return
 
@@ -144,11 +143,11 @@ class CommandProcessor(ActionProcessor):
     def process_demotivator_command(self):
         if self.action.reply_to_message is None:
             self._create_demotivator_with_avatar()
-        message = self.bot.forward_message(settings.PARSER_CHAT_ID, self.chat_id,
-                                           self.action.reply_to_message.message_id)
-        if message.content_type != 'photo':
+            return
+        if self.action.reply_to_message.content_type != 'photo':
             self._create_demotivator_with_avatar()
-        self.download_photo(message)
+            return
+        self.download_photo(self.action)
         demotivator_path = DemotivatorMaker(self.downloaded_file_path).create_demotivator()
         with open(demotivator_path, 'rb') as demotivator:
             self.bot.send_photo(self.chat_id, demotivator)

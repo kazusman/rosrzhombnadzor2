@@ -201,7 +201,7 @@ class ActionProcessor(BotUser):
         if message is None:
             photo_id = self.action.photo[-1].file_id
         else:
-            photo_id = message.photo[-1].file_id
+            photo_id = message.reply_to_message.photo[-1].file_id
         file_path = self.bot.get_file(photo_id).file_path
         file_bytes = self.bot.download_file(file_path)
         self._save_photo(file_bytes)
