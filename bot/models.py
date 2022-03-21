@@ -184,19 +184,22 @@ class Message(models.Model):
 
     message_text = models.TextField(
         verbose_name='Message text',
-        null=True
+        null=True,
+        blank=True
     )
 
     content_hash = models.CharField(
         verbose_name='MD5 content hash',
         max_length=128,
-        null=True
+        null=True,
+        blank=True
     )
 
     file_id = models.CharField(
         verbose_name='File ID',
         max_length=128,
-        null=True
+        null=True,
+        blank=True
     )
 
     message_id = models.IntegerField(
@@ -205,7 +208,8 @@ class Message(models.Model):
 
     text_on_image = models.TextField(
         verbose_name='Text from image',
-        null=True
+        null=True,
+        blank=True
     )
 
     recognition_type = models.CharField(
@@ -446,3 +450,18 @@ class Donate(models.Model):
 
     def __str__(self):
         return f'{self.from_user} to {self.to_user}'
+
+
+class DemotivatorText(models.Model):
+
+    text = models.CharField(
+        max_length=80,
+        verbose_name='Demotivator text',
+    )
+
+    class Meta:
+        verbose_name = 'Demotivator text'
+        verbose_name_plural = 'Demotivator texts'
+
+    def __str__(self):
+        return self.text

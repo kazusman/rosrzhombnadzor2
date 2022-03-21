@@ -208,3 +208,10 @@ class DonateAdmin(admin.ModelAdmin):
     readonly_fields = (
         'created_at',
     )
+
+
+@admin.register(DemotivatorText)
+class DemotivatorTextAdmin(admin.ModelAdmin):
+
+    list_display = ('id', 'text')
+    list_display_links = list_display
