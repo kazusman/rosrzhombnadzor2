@@ -205,8 +205,10 @@ JAZZMIN_SETTINGS = {
         "bot.donate": "fas fa-donate",
         "bot.anekdot": "fas fa-grin-wink",
         "bot.status": "fas fa-link",
+        "bot.demotivatortext": "far fa-square",
         "google_vision": "fab fa-google",
-        "google_vision.request": "fas fa-globe"
+        "google_vision.request": "fas fa-globe",
+        "google_vision.recognitiontype": "fas fa-eye"
 
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
