@@ -1,10 +1,9 @@
-import requests
-
 from bot.service import ActionProcessor, get_readable_balance
 from bot.models import *
 from bot.service import text
+from bot.service.demotivator import DemotivatorMaker
 from google_vision.models import RecognitionType
-from typing import Union
+from typing import Union, Optional
 from telebot import types  # noqa
 from random import choice
 from django.db.models import ObjectDoesNotExist, Q
@@ -46,12 +45,18 @@ class CommandProcessor(ActionProcessor):
             from_user=self.database_user
         )
 
-    def _get_file_id(self):
+    def _get_replied_message(self) -> Optional[Message]:
         try:
-            message = Message.objects.get(
+            return Message.objects.get(
                 message_id=self.action.reply_to_message.message_id
             )
+
         except ObjectDoesNotExist:
+            return
+
+    def _get_file_id(self):
+        message = self._get_replied_message()
+        if message is None:
             self.bot.send_message(self.chat_id, text.FILE_ID_NO_MESSAGE)
             return
         if message.file_id is None:
@@ -121,3 +126,19 @@ class CommandProcessor(ActionProcessor):
         current_non_main_type.is_main = True
         current_main_type.save()
         current_non_main_type.save()
+
+    def process_demotivator_command(self):
+        if self.action.reply_to_message is None:
+            self.bot.send_message(self.chat_id, text.FILE_ID_NEED_TO_REPLY)
+            return
+        message = self.bot.forward_message(settings.PARSER_CHAT_ID, self.chat_id,
+                                           self.action.reply_to_message.message_id)
+        if message.content_type != 'photo':
+            self.bot.send_message(self.chat_id, text.MESSAGE_IS_NOT_PHOTO)
+            return
+        self.download_photo(message)
+        demotivator_path = DemotivatorMaker(self.downloaded_file_path).create_demotivator()
+        with open(demotivator_path, 'rb') as demotivator:
+            self.bot.send_photo(self.chat_id, demotivator)
+
+

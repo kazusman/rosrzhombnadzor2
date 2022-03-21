@@ -53,3 +53,9 @@ def donate_command(message: types.Message):
 def switch_vision_recognition_command(message: types.Message):
 
     CommandProcessor(message).process_switch_vision_recognition()
+
+
+@bot.message_handler(commands=['demotivator'])
+def demotivator_command(message: types.Message):
+
+    CommandProcessor(message).process_demotivator_command()

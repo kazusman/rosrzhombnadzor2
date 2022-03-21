@@ -1,4 +1,5 @@
 import hashlib
+import os
 
 from telebot import types  # noqa
 from bot.models import User, Status, Message
@@ -8,6 +9,7 @@ from bot.service.markup import Markup
 from bot.service.decorators import check_chat
 from datetime import datetime
 from google_vision.service import VisionAPI
+from django.conf import settings
 
 
 def user_status(telegram_id: int) -> Optional[str]:
@@ -154,6 +156,9 @@ class ActionProcessor(BotUser):
         self.markup = Markup(self.database_user)
         self._get_last_status()
 
+    downloaded_file_path = os.path.join(settings.BASE_DIR, 'bot', 'communication', 'photos',
+                                        'downloaded_files', 'image.jpg')
+
     @staticmethod
     def get_md5_hash(file_bytes: bytes) -> str:
         """
@@ -187,3 +192,17 @@ class ActionProcessor(BotUser):
             text_on_image=text_on_image,
             file_id=file_id
         )
+
+    def _save_photo(self, file_bytes: bytes):
+        with open(self.downloaded_file_path, 'wb') as file:
+            file.write(file_bytes)
+
+    def download_photo(self, message: Optional[types.Message] = None) -> bytes:
+        if message is None:
+            photo_id = self.action.photo[-1].file_id
+        else:
+            photo_id = message.photo[-1].file_id
+        file_path = self.bot.get_file(photo_id).file_path
+        file_bytes = self.bot.download_file(file_path)
+        self._save_photo(file_bytes)
+        return file_bytes

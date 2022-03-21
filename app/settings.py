@@ -106,6 +106,7 @@ CHAT_ID = int(os.getenv('CHAT_ID'))
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 PROJECT_URL = os.getenv('PROJECT_URL')
 CHAT_URL = os.getenv('CHAT_URL')
+PARSER_CHAT_ID = int(os.getenv('PARSER_CHAT_ID'))
 
 BOOLEAN_CHOICES = [
     (True, '✅ Yes'),
