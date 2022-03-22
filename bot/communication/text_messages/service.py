@@ -3,8 +3,6 @@ from bot.models import *
 from typing import Union
 from telebot import types  # noqa
 from random import choice
-from django.db.models import QuerySet
-from datetime import datetime
 from bot.service.funny_answer import TextAnalyzer
 
 
@@ -20,12 +18,18 @@ class TextProcessor(ActionProcessor):
     amount: str
 
     def _process_search_meme(self):
+        if len(self.message_text) <= 2:
+            random_answer = choice(NotFoundAnswer.objects.all()).text
+            self.bot.send_message(self.chat_id, random_answer)
+            return
         found_memes = search_paginator.Paginator(self.database_user, self.message_text).find_messages()
         if found_memes['found']:
             message_text = found_memes['message_text']
             reply_markup = found_memes['reply_markup']
             self.bot.send_message(self.chat_id, message_text, reply_markup=reply_markup, parse_mode='HTML')
-        self.update_status('rzhomber')
+        else:
+            random_answer = choice(NotFoundAnswer.objects.all())
+            self.bot.send_message(self.chat_id, random_answer)
 
     def _is_float(self) -> bool:
         try:
@@ -95,6 +99,7 @@ class TextProcessor(ActionProcessor):
     def process_text_message(self):
         if self.status == 'search_meme':
             self._process_search_meme()
+            self.update_status('rzhomber')
         elif 'waiting_bet_amount' in self.status:
             self._process_bet_amount()
         elif 'donate_amount' in self.status:
