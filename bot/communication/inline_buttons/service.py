@@ -1,5 +1,6 @@
 from bot.service import ActionProcessor, text, get_readable_balance
-from bot.models import User, Bet, Donate
+from bot.service.search_paginator import Paginator
+from bot.models import User, Bet, Donate, SearchRequest
 from typing import Union
 from telebot import types  # noqa
 from datetime import datetime
@@ -44,6 +45,17 @@ class InlineProcessor(ActionProcessor):
     def _add_donate_to_user(donate_to_user: User, donate: Donate):
         donate.to_user = donate_to_user
         donate.save()
+
+    @staticmethod
+    def _get_search_request(search_request_id: int) -> SearchRequest:
+        return SearchRequest.objects.get(id=search_request_id)
+
+    def _get_found_memes_paginator(self) -> Paginator:
+        search_request_id = int(self.call_data.split(':')[2])
+        search_request = self._get_search_request(search_request_id)
+        found_memes = Paginator(self.database_user, search_request.search_text)
+        found_memes.search_request = search_request
+        return found_memes
 
     def process_bet_target_user(self):
         target_user_id = int(self.action.data.split(':')[1])
@@ -119,3 +131,20 @@ class InlineProcessor(ActionProcessor):
         self.update_status(f'donate_amount:{donate_id}')
         self.bot.edit_message_text(text.SEND_DONATE_AMOUNT.format(get_readable_balance(self.database_user.coins)),
                                    self.chat_id, self.message_id)
+
+    def process_turn_over_page(self):
+        page = int(self.call_data.split(':')[1])
+        found_memes = self._get_found_memes_paginator().turn_over_page(page)
+        message_text = found_memes['message_text']
+        reply_markup = found_memes['reply_markup']
+        self.bot.edit_message_text(message_text, self.chat_id, self.message_id, reply_markup=reply_markup,
+                                   parse_mode='HTML')
+
+    def process_empty_button(self):
+        self.bot.answer_callback_query(self.call_id, '🤔')
+
+    def process_amount_of_pages_call(self):
+        search_request_id = int(self.call_data.split(':')[1])
+        pages_count = int(self.call_data.split(':')[2])
+        reply_markup = self.markup.get_all_pages(pages_count, search_request_id)
+        self.bot.edit_message_reply_markup(self.chat_id, self.message_id, reply_markup=reply_markup)

@@ -465,3 +465,28 @@ class DemotivatorText(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class SearchRequest(models.Model):
+
+    user = models.ForeignKey(
+        to=User,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name='User'
+    )
+
+    search_text = models.TextField(
+        verbose_name='Search text'
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Search text'
+    )
+
+    class Meta:
+        verbose_name = 'Search request'
+        verbose_name_plural = 'Search requests'
+
+    def __str__(self):
+        return truncatechars(self.search_text, 50)

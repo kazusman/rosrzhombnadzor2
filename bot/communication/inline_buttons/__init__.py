@@ -45,3 +45,33 @@ def already_haha_call(call: types.CallbackQuery):
 def to_user_donate_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_to_donate_call()
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('next_page'))
+def search_next_page(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_turn_over_page()
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('previous_page'))
+def search_previous_page(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_turn_over_page()
+
+
+@bot.callback_query_handler(func=lambda call: call_data(call) == 'empty_button')
+def empty_button(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_empty_button()
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('amount_of_pages'))
+def amount_of_pages(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_amount_of_pages_call()
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('get_page'))
+def get_page_call(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_turn_over_page()

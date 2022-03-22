@@ -1,6 +1,7 @@
 from telebot.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton  # noqa
-from bot.models import User
+from bot.models import User, SearchRequest
 from django.db.models import QuerySet
+from typing import Optional
 
 
 class Markup:
@@ -42,4 +43,55 @@ class Markup:
                 InlineKeyboardButton(user.username, callback_data=f'donate_to_user:{user.id}') for user in users
             ]
         )
+        return markup
+
+    @staticmethod
+    def next_pages_buttons(search_request: SearchRequest, pages_count: int) -> Optional[InlineKeyboardMarkup]:
+        if pages_count == 1:
+            return
+        markup = InlineKeyboardMarkup()
+        markup.add(
+            InlineKeyboardButton('🤔', callback_data='empty_back_button'),
+            InlineKeyboardButton(f'1/{pages_count}',
+                                 callback_data=f'amount_of_pages:{search_request.id}:{pages_count}'),
+            InlineKeyboardButton('➡️', callback_data=f'next_page:2:{search_request.id}')
+        )
+        return markup
+
+    @staticmethod
+    def all_paginator_buttons(search_request: SearchRequest, pages_count: int,
+                              current_page: int) -> InlineKeyboardMarkup:
+        markup = InlineKeyboardMarkup(row_width=3)
+        if current_page == pages_count:
+            buttons = [
+                InlineKeyboardButton('⬅️', callback_data=f'previous_page:{current_page - 1}:{search_request.id}'),
+                InlineKeyboardButton(f'{current_page}/{pages_count}',
+                                     callback_data=f'amount_of_pages:{search_request.id}:{pages_count}'),
+                InlineKeyboardButton('🤔️', callback_data='empty_button')
+            ]
+        elif current_page == 1:
+            buttons = [
+                InlineKeyboardButton('🤔️', callback_data='empty_button'),
+                InlineKeyboardButton(f'{current_page}/{pages_count}',
+                                     callback_data=f'amount_of_pages:{search_request.id}:{pages_count}'),
+                InlineKeyboardButton('➡️', callback_data=f'next_page:{current_page + 1}:{search_request.id}')
+            ]
+        else:
+            buttons = [
+                InlineKeyboardButton('⬅️', callback_data=f'previous_page:{current_page - 1}:{search_request.id}'),
+                InlineKeyboardButton(f'{current_page}/{pages_count}',
+                                     callback_data=f'amount_of_pages:{search_request.id}:{pages_count}'),
+                InlineKeyboardButton('➡️', callback_data=f'next_page:{current_page + 1}:{search_request.id}')
+            ]
+        markup.add(*buttons)
+        return markup
+
+    @staticmethod
+    def get_all_pages(pages_count: int, search_request_id: int) -> InlineKeyboardMarkup:
+        markup = InlineKeyboardMarkup(row_width=5)
+        buttons = [
+            InlineKeyboardButton(str(i + 1), callback_data=f'get_page:{i + 1}:{search_request_id}')
+            for i in range(pages_count)
+        ]
+        markup.add(*buttons)
         return markup

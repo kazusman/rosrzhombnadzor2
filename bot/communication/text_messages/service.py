@@ -1,4 +1,4 @@
-from bot.service import ActionProcessor, text, get_readable_balance
+from bot.service import ActionProcessor, text, get_readable_balance, search_paginator
 from bot.models import *
 from typing import Union
 from telebot import types  # noqa
@@ -19,63 +19,12 @@ class TextProcessor(ActionProcessor):
 
     amount: str
 
-    @staticmethod
-    def _get_readable_date(date: datetime) -> str:
-        month_names = {
-            1: 'января',
-            2: 'февраля',
-            3: 'марта',
-            4: 'апреля',
-            5: 'мая',
-            6: 'июня',
-            7: 'июля',
-            8: 'августа',
-            9: 'сентября',
-            10: 'октября',
-            11: 'ноября',
-            12: 'декабря'
-        }
-        return f'{date.day} {month_names[date.month]} {date.year} г.'
-
-    def _create_list_of_founded_messages(self, messages: QuerySet[Message]) -> str:
-
-        """
-        Собираем текстовое сообщение со ссылками на найденные в бд мемы
-        """
-
-        messages_list = 'Кое-что нарыл:\n\n'
-        russian_message_types = {'photo': 'Картинка', 'video': 'Видео'}
-        for i, message in enumerate(messages, 1):
-            if i < 10:
-                spaces = '  '
-            else:
-                spaces = ' '
-            messages_list += f'<code>{i}.{spaces}</code><a href="{settings.CHAT_URL}/{message.message_id}">' \
-                             f'{russian_message_types[message.message_type]}</a> от ' \
-                             f'{self._get_readable_date(message.created_at)}\n'
-        return messages_list
-
     def _process_search_meme(self):
-
-        """
-        Ищем мемы в БД
-        """
-
-        possible_messages = Message.objects.filter(
-            text_on_image__icontains=self.message_text
-        ).order_by('created_at')
-
-        if len(possible_messages) > 75:
-            self.bot.send_message(self.chat_id, text.TOO_MANY_RESULTS)
-
-        elif 75 >= len(possible_messages) > 0:
-            message_list = self._create_list_of_founded_messages(possible_messages)
-            self.bot.send_message(self.chat_id, message_list, parse_mode='HTML')
-
-        else:
-            not_found_answer: str = choice(NotFoundAnswer.objects.all()).text
-            self.bot.send_message(self.chat_id, not_found_answer, parse_mode='HTML')
-
+        found_memes = search_paginator.Paginator(self.database_user, self.message_text).find_messages()
+        if found_memes['found']:
+            message_text = found_memes['message_text']
+            reply_markup = found_memes['reply_markup']
+            self.bot.send_message(self.chat_id, message_text, reply_markup=reply_markup, parse_mode='HTML')
         self.update_status('rzhomber')
 
     def _is_float(self) -> bool:
