@@ -219,6 +219,12 @@ class Message(models.Model):
         verbose_name='Recognition type'
     )
 
+    json_body = models.JSONField(
+        null=True,
+        blank=True,
+        verbose_name='JSON Body'
+    )
+
     @property
     def content_text_preview(self):
         if self.text_on_image is None:
