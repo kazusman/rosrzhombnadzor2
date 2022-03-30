@@ -1,8 +1,10 @@
-from bot.service import ActionProcessor
-from bot.models import *
-from bot.service import text
 from typing import Union
+
 from telebot import types  # noqa
+
+from bot.models import *
+from bot.service import ActionProcessor
+from bot.service import text
 
 
 class ChatMemberProcessor(ActionProcessor):

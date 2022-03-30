@@ -1,8 +1,13 @@
-from bot.service import ActionProcessor, text, get_readable_balance, search_paginator
-from bot.models import *
-from typing import Union
-from telebot import types  # noqa
 from random import choice
+from typing import Union
+
+from telebot import types  # noqa
+
+from bot.models import *
+from bot.service import ActionProcessor
+from bot.service import get_readable_balance
+from bot.service import search_paginator
+from bot.service import text
 from bot.service.funny_answer import TextAnalyzer
 
 
@@ -22,18 +27,22 @@ class TextProcessor(ActionProcessor):
             random_answer = choice(NotFoundAnswer.objects.all()).text
             self.bot.send_message(self.chat_id, random_answer)
             return
-        found_memes = search_paginator.Paginator(self.database_user, self.message_text).find_messages()
-        if found_memes['found']:
-            message_text = found_memes['message_text']
-            reply_markup = found_memes['reply_markup']
-            self.bot.send_message(self.chat_id, message_text, reply_markup=reply_markup, parse_mode='HTML')
+        found_memes = search_paginator.Paginator(
+            self.database_user, self.message_text
+        ).find_messages()
+        if found_memes["found"]:
+            message_text = found_memes["message_text"]
+            reply_markup = found_memes["reply_markup"]
+            self.bot.send_message(
+                self.chat_id, message_text, reply_markup=reply_markup, parse_mode="HTML"
+            )
         else:
             random_answer = choice(NotFoundAnswer.objects.all())
-            self.bot.send_message(self.chat_id, random_answer.text, parse_mode='HTML')
+            self.bot.send_message(self.chat_id, random_answer.text, parse_mode="HTML")
 
     def _is_float(self) -> bool:
         try:
-            self.amount = self.message_text.replace(',', '.').replace(' ', '')
+            self.amount = self.message_text.replace(",", ".").replace(" ", "")
             float(self.amount)
             return True
         except ValueError:
@@ -44,7 +53,7 @@ class TextProcessor(ActionProcessor):
         bet.save()
 
     def _process_bet_amount(self):
-        bet_id = int(self.status.split(':')[1])
+        bet_id = int(self.status.split(":")[1])
         if self._is_float():
             float_amount = round(float(self.amount), 2)
             bet = Bet.objects.get(id=bet_id)
@@ -52,25 +61,37 @@ class TextProcessor(ActionProcessor):
                 self.bot.send_message(self.chat_id, text.TOO_MUCH)
                 return
             elif float_amount > bet.bet_target_user.coins:
-                self.bot.send_message(self.chat_id, text.TOO_MUCH_TARGET.format(bet.bet_target_user.username))
+                self.bot.send_message(
+                    self.chat_id,
+                    text.TOO_MUCH_TARGET.format(bet.bet_target_user.username),
+                )
                 return
             elif float_amount == 0:
                 self.bot.send_message(self.chat_id, text.ZERO_NOT_ALLOWED)
                 return
             self._add_amount_to_bet(bet)
             reply_markup = self.markup.funny_or_not(bet.id)
-            self.bot.send_message(self.chat_id, text.CALL_TARGET_USER.format(
-                bet.user.username, bet.bet_target_user.username, get_readable_balance(bet.amount)
-            ), reply_markup=reply_markup)
-            self.update_status('rzhomber')
+            self.bot.send_message(
+                self.chat_id,
+                text.CALL_TARGET_USER.format(
+                    bet.user.username,
+                    bet.bet_target_user.username,
+                    get_readable_balance(bet.amount),
+                ),
+                reply_markup=reply_markup,
+            )
+            self.update_status("rzhomber")
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
-            self.update_status('rzhomber')
+            self.update_status("rzhomber")
 
     @staticmethod
     def _provide_donate_amounts(donate: Donate, float_amount: float):
-        donate.amount, donate.to_user.coins, donate.from_user.coins = \
-            float_amount, donate.to_user.coins + float_amount, donate.from_user.coins - float_amount
+        donate.amount, donate.to_user.coins, donate.from_user.coins = (
+            float_amount,
+            donate.to_user.coins + float_amount,
+            donate.from_user.coins - float_amount,
+        )
         donate.save()
         donate.to_user.save()
         donate.from_user.save()
@@ -84,25 +105,29 @@ class TextProcessor(ActionProcessor):
             if float_amount > self.database_user.coins:
                 self.bot.send_message(self.chat_id, text.DONATE_TOO_MUCH_AMOUNT)
                 return
-            donate_id = int(self.status.split(':')[1])
+            donate_id = int(self.status.split(":")[1])
             donate = Donate.objects.get(id=donate_id)
             self._provide_donate_amounts(donate, float_amount)
-            self.update_status('rzhomber')
-            self.bot.send_message(self.chat_id, text.DONATE_FINISHED.format(
-                get_readable_balance(donate.from_user.coins), donate.to_user.username,
-                get_readable_balance(donate.to_user.coins)
-             ))
+            self.update_status("rzhomber")
+            self.bot.send_message(
+                self.chat_id,
+                text.DONATE_FINISHED.format(
+                    get_readable_balance(donate.from_user.coins),
+                    donate.to_user.username,
+                    get_readable_balance(donate.to_user.coins),
+                ),
+            )
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
-            self.update_status('rzhomber')
+            self.update_status("rzhomber")
 
     def process_text_message(self):
-        if self.status == 'search_meme':
+        if self.status == "search_meme":
             self._process_search_meme()
-            self.update_status('rzhomber')
-        elif 'waiting_bet_amount' in self.status:
+            self.update_status("rzhomber")
+        elif "waiting_bet_amount" in self.status:
             self._process_bet_amount()
-        elif 'donate_amount' in self.status:
+        elif "donate_amount" in self.status:
             self._process_donate_amount()
         else:
             self.save_message(message_text=self.message_text)

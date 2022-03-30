@@ -1,6 +1,8 @@
-from bot.service import ActionProcessor
 from typing import Union
+
 from telebot import types  # noqa
+
+from bot.service import ActionProcessor
 
 
 class VoiceProcessor(ActionProcessor):

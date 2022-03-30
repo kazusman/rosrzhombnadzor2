@@ -1,5 +1,8 @@
 from celery import shared_task
-from bot.service.jobs import give_money, happy_birthday_messages, send_daily_stat
+
+from bot.service.jobs import give_money
+from bot.service.jobs import happy_birthday_messages
+from bot.service.jobs import send_daily_stat
 
 
 @shared_task

@@ -1,11 +1,23 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
-from django.core.handlers.wsgi import WSGIRequest
-from bot.config import bot
 from django.conf import settings
+from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from telebot import types  # noqa
-from bot.communication import audios, commands, documents, photos, stickers, text_messages, video_notes  # noqa
-from bot.communication import videos, voices, animations, inline_buttons, chat_member  # noqa
+
+from bot.communication import animations
+from bot.communication import audios
+from bot.communication import chat_member
+from bot.communication import commands
+from bot.communication import documents
+from bot.communication import inline_buttons
+from bot.communication import photos
+from bot.communication import stickers
+from bot.communication import text_messages
+from bot.communication import video_notes
+from bot.communication import videos
+from bot.communication import voices
+from bot.config import bot
 
 
 def set_webhook(_) -> HttpResponseRedirect:
@@ -18,8 +30,10 @@ def set_webhook(_) -> HttpResponseRedirect:
     """
 
     bot.delete_webhook()
-    bot.set_webhook(f'{settings.PROJECT_URL}/bot/new_update/{settings.TELEGRAM_BOT_TOKEN}/')
-    return HttpResponseRedirect('/admin/')
+    bot.set_webhook(
+        f"{settings.PROJECT_URL}/bot/new_update/{settings.TELEGRAM_BOT_TOKEN}/"
+    )
+    return HttpResponseRedirect("/admin/")
 
 
 @csrf_exempt
@@ -32,8 +46,8 @@ def new_update(request: WSGIRequest) -> HttpResponse:
     :return: HttResponse со статусом 200, если нет ошибок и мы получили POST запрос. 404, если тип запроса любой другой
     """
 
-    if request.method == 'POST':
-        json_string = request.body.decode('UTF-8')
+    if request.method == "POST":
+        json_string = request.body.decode("UTF-8")
         update = types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return HttpResponse(status=200)

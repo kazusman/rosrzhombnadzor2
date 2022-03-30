@@ -1,10 +1,11 @@
 import os
-import cv2
-
-from django.conf import settings
-from bot.service import ActionProcessor
 from typing import Union
+
+import cv2
+from django.conf import settings
 from telebot import types  # noqa
+
+from bot.service import ActionProcessor
 
 
 class VideoProcessor(ActionProcessor):
@@ -15,10 +16,22 @@ class VideoProcessor(ActionProcessor):
 
     def __init__(self, action: Union[types.Message, types.CallbackQuery]):
         super().__init__(action)
-        self.downloaded_video_path = os.path.join(settings.BASE_DIR, 'bot', 'communication',
-                                                  'videos', 'downloaded_files', 'video.mp4')
-        self.first_frame_saved_destination = os.path.join(settings.BASE_DIR, 'bot', 'communication', 'photos',
-                                                          'downloaded_files', 'image.jpg')
+        self.downloaded_video_path = os.path.join(
+            settings.BASE_DIR,
+            "bot",
+            "communication",
+            "videos",
+            "downloaded_files",
+            "video.mp4",
+        )
+        self.first_frame_saved_destination = os.path.join(
+            settings.BASE_DIR,
+            "bot",
+            "communication",
+            "photos",
+            "downloaded_files",
+            "image.jpg",
+        )
 
     def _extract_first_frame(self):
         video = cv2.VideoCapture(self.downloaded_video_path)
@@ -33,7 +46,7 @@ class VideoProcessor(ActionProcessor):
             video_id = self.action.video.file_id
             file_path = self.bot.get_file(video_id).file_path
             file_bytes = self.bot.download_file(file_path)
-            with open(self.downloaded_video_path, 'wb') as file:
+            with open(self.downloaded_video_path, "wb") as file:
                 file.write(file_bytes)
             self._extract_first_frame()
             return True
