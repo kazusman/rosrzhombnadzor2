@@ -29,7 +29,7 @@ class TextProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, message_text, reply_markup=reply_markup, parse_mode='HTML')
         else:
             random_answer = choice(NotFoundAnswer.objects.all())
-            self.bot.send_message(self.chat_id, random_answer)
+            self.bot.send_message(self.chat_id, random_answer.text, parse_mode='HTML')
 
     def _is_float(self) -> bool:
         try:
