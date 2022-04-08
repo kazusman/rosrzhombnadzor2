@@ -1,4 +1,4 @@
-# Jazzmin settings
+import os
 
 JAZZMIN_SETTINGS = {
     "site_title": "РосРжомбНадзор",
