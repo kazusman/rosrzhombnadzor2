@@ -9,5 +9,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("bot/", include("bot.urls")),
     path("healthcheck/", health_check),
-    path("", index)
+    path("", index),
 ]

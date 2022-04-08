@@ -9,4 +9,4 @@ def health_check(_) -> HttpResponse:
 
 def index(_) -> HttpResponseRedirect:
 
-    return HttpResponseRedirect('/admin/')
+    return HttpResponseRedirect("/admin/")
