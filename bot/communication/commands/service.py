@@ -89,8 +89,9 @@ class CommandProcessor(ActionProcessor):
         self.bot.send_message(self.chat_id, message_text, parse_mode="HTML")
 
     def process_search_command(self):
-        self.update_status("search_meme")
-        self.bot.send_message(self.chat_id, text.LETS_SEARCH)
+        if not self.is_forwarded:
+            self.update_status("search_meme")
+            self.bot.send_message(self.chat_id, text.LETS_SEARCH)
 
     def process_bet_command(self):
         if self.action.reply_to_message is None:
