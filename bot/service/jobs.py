@@ -6,6 +6,7 @@ from pytz import timezone
 
 from bot.config import bot
 from bot.models import Bet
+from bot.models import Donate
 from bot.models import User
 from bot.service import get_readable_balance
 from bot.service import get_years_decade
@@ -51,7 +52,10 @@ def send_daily_stat():
     yesterday_bets = Bet.objects.filter(
         created_at__gt=yesterday_datetime, created_at__lt=current_datetime
     )
-    if len(yesterday_bets) != 0:
+    yesterday_donates = Donate.objects.filter(
+        created_at__gt=yesterday_datetime, created_at__lt=current_datetime
+    )
+    if len(yesterday_bets) != 0 or len(yesterday_donates) != 0:
         stat_text = ""
         users = User.objects.filter(is_deleted=False).order_by("-coins")
         for user in users:

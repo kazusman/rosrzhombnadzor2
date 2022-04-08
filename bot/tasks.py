@@ -6,7 +6,7 @@ from bot.service.jobs import send_daily_stat
 
 
 @shared_task
-def give_monthly_coins():
+def give_weekly_coins():
     give_money()
 
 
