@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "bot.apps.BotConfig",
     "google_vision.apps.GoogleVisionConfig",
+    "rest_framework.apps.RestFrameworkConfig"
 ]
 
 MIDDLEWARE = [
@@ -153,4 +154,11 @@ CELERY_BEAT_SCHEDULE = {
         "task": "bot.tasks.daily_stat",
         "schedule": crontab(hour=0, minute=0),
     },
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
 }
