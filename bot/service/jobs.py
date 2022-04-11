@@ -15,15 +15,14 @@ from bot.service import text
 
 def give_money():
 
-    if datetime.now(timezone(settings.TIME_ZONE)).weekday() == 0:
-        users = User.objects.filter(is_deleted=False)
-        for user in users:
-            new_balance = user.coins + 5000
-            user.coins = new_balance
-            user.save()
-        bot.send_message(
-            settings.CHAT_ID, "Начислил по 5 000 Ржомбакоинов всем причастным"
-        )
+    users = User.objects.filter(is_deleted=False)
+    for user in users:
+        new_balance = user.coins + 5000
+        user.coins = new_balance
+        user.save()
+    bot.send_message(
+        settings.CHAT_ID, "Начислил по 5 000 Ржомбакоинов всем причастным"
+    )
 
 
 def happy_birthday_messages():

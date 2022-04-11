@@ -144,7 +144,7 @@ CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_BEAT_SCHEDULE = {
     "monthly_coins": {
         "task": "bot.tasks.give_weekly_coins",
-        "schedule": crontab(hour=12, minute=0),
+        "schedule": crontab(day_of_week='mon', hour=12, minute=0),
     },
     "happy_birthday": {
         "task": "bot.tasks.send_happy_birthday",
