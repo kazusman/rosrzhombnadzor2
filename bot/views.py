@@ -4,20 +4,23 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from telebot import types  # noqa
+from rest_framework import generics
 
-from bot.communication import animations
-from bot.communication import audios
-from bot.communication import chat_member
-from bot.communication import commands
-from bot.communication import documents
-from bot.communication import inline_buttons
-from bot.communication import photos
-from bot.communication import stickers
-from bot.communication import text_messages
-from bot.communication import video_notes
-from bot.communication import videos
-from bot.communication import voices
+from bot.communication import animations  # noqa
+from bot.communication import audios  # noqa
+from bot.communication import chat_member  # noqa
+from bot.communication import commands  # noqa
+from bot.communication import documents  # noqa
+from bot.communication import inline_buttons  # noqa
+from bot.communication import photos  # noqa
+from bot.communication import stickers  # noqa
+from bot.communication import text_messages  # noqa
+from bot.communication import video_notes  # noqa
+from bot.communication import videos  # noqa
+from bot.communication import voices  # noqa
 from bot.config import bot
+from bot.models import User
+from bot.serializers import UserSerializer
 
 
 def set_webhook(_) -> HttpResponseRedirect:
@@ -53,3 +56,9 @@ def new_update(request: WSGIRequest) -> HttpResponse:
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=404)
+
+
+class UserAPIView(generics.ListAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
