@@ -11,6 +11,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
 Django==4.0.2
 django-jazzmin==2.4.9
+djangorestframework==3.13.1
 google-api-core==2.5.0
 google-auth==2.6.0
 google-cloud-vision==2.6.3
