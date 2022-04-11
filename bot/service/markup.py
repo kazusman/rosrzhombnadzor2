@@ -18,6 +18,9 @@ class Markup:
 
         markup = InlineKeyboardMarkup()
         markup.row_width = 2
+        for user in users:
+            if user.username is None:
+                user.username = user.first_name
         markup.add(
             *[
                 InlineKeyboardButton(
