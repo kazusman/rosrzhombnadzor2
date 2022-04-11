@@ -18,9 +18,9 @@ def give_money():
     if datetime.now(timezone(settings.TIME_ZONE)).weekday() == 0:
         users = User.objects.filter(is_deleted=False)
         for user in users:
-            new_balance = users.coins + 5000
+            new_balance = user.coins + 5000
             user.coins = new_balance
-            users.save()
+            user.save()
         bot.send_message(
             settings.CHAT_ID, "Начислил по 5 000 Ржомбакоинов всем причастным"
         )
