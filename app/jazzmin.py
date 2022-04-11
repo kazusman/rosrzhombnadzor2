@@ -3,6 +3,7 @@ import os
 JAZZMIN_SETTINGS = {
     "site_title": "РосРжомбНадзор",
     "site_header": "РосРжомбНадзор",
+    "site_brand": "РосРжомбНадзор",
     "site_logo": "jazzmin/img/logo.png",
     "site_icon": "jazzmin/img/favicon.ico",
     "welcome_sign": "Добро пожаловать в РосРжомбНадзор",
