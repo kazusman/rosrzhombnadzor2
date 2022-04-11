@@ -47,6 +47,9 @@ class Markup:
     @staticmethod
     def donate_user_list(users: QuerySet[User]) -> InlineKeyboardMarkup:
         markup = InlineKeyboardMarkup()
+        for user in users:
+            if user.username is None:
+                user.username = user.first_name
         markup.row_width = 2
         markup.add(
             *[

@@ -10,4 +10,5 @@ urlpatterns = [
     path("bot/", include("bot.urls")),
     path("healthcheck/", health_check),
     path("", index),
+    # path("api/v1/", include("api.urls"))
 ]
