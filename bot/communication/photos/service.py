@@ -75,7 +75,7 @@ class PhotoProcessor(ActionProcessor):
             )
         if text_on_image != "":
             self.add_text_from_image(message, text_on_image, recognition_type)
-            TextAnalyzer(text_on_image, self.chat_id, self.message_id)
+            TextAnalyzer(text_on_image, self.chat_id, self.message_id).analyze()
             return
         if self.caption is not None:
-            TextAnalyzer(self.caption, self.chat_id, self.message_id)
+            TextAnalyzer(self.caption, self.chat_id, self.message_id).analyze()
