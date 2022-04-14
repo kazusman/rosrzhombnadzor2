@@ -177,13 +177,16 @@ class BotUser(BotChat):
         if len(statuses) != 0:
             self.status = statuses[0].status
 
-    def update_status(self, status: str):
+    def update_status(self, status: str, user:  Optional[User] = None):
 
         """
         Добавляем новую запись в модель Status
         """
 
-        Status.objects.create(user=self.database_user, status=status)
+        if user is None:
+            Status.objects.create(user=self.database_user, status=status)
+        else:
+            Status.objects.create(user=user, status=status)
 
     def switch_deleted_status(self, deleted_status: bool, user: Optional[User] = None):
         if user is None:
