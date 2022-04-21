@@ -132,7 +132,8 @@ class CommandProcessor(ActionProcessor):
         if self.action.reply_to_message is not None:
             message = Message.objects.filter(message_id=self.action.reply_to_message.message_id)
             if message:
-                if message[0].user != self.database_user:
+                message = message[0]
+                if message.user != self.database_user:
                     donate = self._create_donate(message.user)
                     self.update_status(f"donate_amount:{donate.id}")
                     self.bot.send_message(self.chat_id,
