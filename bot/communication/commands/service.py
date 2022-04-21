@@ -45,8 +45,8 @@ class CommandProcessor(ActionProcessor):
             user=self.database_user, message=message, bot_message_id=new_message.id
         )
 
-    def _create_donate(self) -> Donate:
-        return Donate.objects.create(from_user=self.database_user)
+    def _create_donate(self, to_user: Optional[User] = None) -> Donate:
+        return Donate.objects.create(from_user=self.database_user, to_user=to_user)
 
     def _get_replied_message(self) -> Optional[Message]:
         try:
@@ -129,6 +129,17 @@ class CommandProcessor(ActionProcessor):
         if self.database_user.coins == 0:
             self.bot.send_message(self.chat_id, text.DONATE_ZERO_BALANCE)
             return
+        if self.action.reply_to_message is not None:
+            message = Message.objects.filter(message_id=self.action.reply_to_message.message_id)
+            if message:
+                if message[0].user != self.database_user:
+                    donate = self._create_donate(message.user)
+                    self.update_status(f"donate_amount:{donate.id}")
+                    self.bot.send_message(self.chat_id,
+                                          text.SEND_DONATE_AMOUNT.format(
+                                              get_readable_balance(self.database_user.coins)
+                                          ))
+                    return
         users = User.objects.filter(
             ~Q(telegram_id=self.telegram_id), is_deleted=False
         ).order_by("username")
