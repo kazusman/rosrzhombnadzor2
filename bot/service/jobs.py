@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from datetime import timedelta
 
@@ -63,3 +64,18 @@ def send_daily_stat():
         for user in users:
             stat_text += f"{user.username}: {get_readable_balance(user.coins)}\n"
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
+
+
+def set_eight_march_avatar():
+    message = bot.send_message(settings.CHAT_ID, 'С 8 марта, девачьки')
+    with open(os.path.join(settings.BASE_DIR, 'bot', 'templates', '8_march.jpg'), 'rb') as avatar:
+        bot.set_chat_photo(settings.CHAT_ID, avatar)
+    file_path = bot.get_file(message.chat.photo.big_file_id)
+    previous_photo_bytes = bot.download_file(file_path)
+    with open(os.path.join(settings.BASE_DIR, 'bot', 'templates', 'previous.jpg'), 'w') as old_avatar:
+        old_avatar.write(previous_photo_bytes)
+
+
+def set_nine_march_avatar():
+    with open(os.path.join(settings.BASE_DIR, 'bot', 'templates', 'previous.jpg'), 'rb') as avatar:
+        bot.set_chat_photo(settings.CHAT_ID, avatar)

@@ -154,6 +154,14 @@ CELERY_BEAT_SCHEDULE = {
         "task": "bot.tasks.daily_stat",
         "schedule": crontab(hour=0, minute=0),
     },
+    "eight_march_avatar": {
+        "task": "bot.tasks.eight_march_avatar",
+        "schedule": crontab(month_of_year=3, day_of_month=8, hour=0, minute=0)
+    },
+    "nine_march_avatar": {
+        "task": "bot.tasks.nine_march_avatar",
+        "schedule": crontab(month_of_year=3, day_of_month=9, hour=0, minute=0)
+    },
 }
 
 
