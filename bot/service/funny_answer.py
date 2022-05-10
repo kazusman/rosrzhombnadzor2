@@ -7,6 +7,16 @@ from bot.config import bot
 from bot.models import *
 from bot.service import text
 
+class RzombaLang:
+    def usersList():
+        users = User.objects.filter(is_deleted=False).order_by("-username")
+        users_list = ""
+        for user in users:
+            current_user = f"@{user.username}"
+            if not user.username:
+                current_user = f"[{user.telegram_id}|{user.first_name}]"
+            users_list += current_user + " "
+        return users_list
 
 class TextAnalyzer:
     def __init__(self, message_text, chat_id, message_id):
@@ -32,8 +42,19 @@ class TextAnalyzer:
         reply_to_message_id = self.message_id if action.is_need_to_reply else None
         if action.answer_type == "text":
             if action.is_interpolation_needed:
-                if action.answer_text.count("{}") != 1:
-                    return
+                lang = RzombaLang()
+                if action.answer_text.count("{}") == 1:
+                    try:
+                        answer_text = action.answer_text.format(self.message_text)
+                    except:
+                        return
+                elif action.answer_text.count("{") != 1 and action.answer_text.count("}") != 1:
+                    try:
+                        answer_text = action.answer_text.format(
+                            publicStaticUsers = lang.usersList()
+                        )
+                    except:
+                        return
                 else:
                     answer_text = action.answer_text.format(self.message_text)
             else:
