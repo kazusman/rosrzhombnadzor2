@@ -51,7 +51,7 @@ class TextAnalyzer:
                 elif action.answer_text.count("{{") == 1 and action.answer_text.count("}}") == 1:
                     def_name_as_string = action.answer_text.split("{{")[1].split("}}")[0]
                     try:
-                        answer_text = locals()[def_name_as_string]()
+                        answer_text = globals()[def_name_as_string]()
                     except KeyError:
                         bot.send_message(self.chat_id, f"Кто-то через жопу настроил правило, "
                                                        f"функции {def_name_as_string} не существует")
