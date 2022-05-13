@@ -60,7 +60,8 @@ def send_daily_stat():
         stat_text = ""
         users = User.objects.filter(is_deleted=False).order_by("-coins")
         for user in users:
-            stat_text += f"{user.username}: {get_readable_balance(user.coins)}\n"
+            stat_text += f"{user.username if user.username is not None else user.first_name}: " \
+                         f"{get_readable_balance(user.coins)}\n"
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
 
 
