@@ -7,16 +7,17 @@ from bot.config import bot
 from bot.models import *
 from bot.service import text
 
-class RzombaLang:
-    def usersList():
-        users = User.objects.filter(is_deleted=False).order_by("-username")
-        users_list = ""
-        for user in users:
-            current_user = f"@{user.username}"
-            if not user.username:
-                current_user = f"[{user.telegram_id}|{user.first_name}]"
-            users_list += current_user + " "
-        return users_list
+
+def get_users_list():
+    users = User.objects.filter(is_deleted=False).order_by("-username")
+    users_list = ""
+    for user in users:
+        current_user = f"@{user.username}"
+        if not user.username:
+            current_user = f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
+        users_list += current_user + " "
+    return users_list
+
 
 class TextAnalyzer:
     def __init__(self, message_text, chat_id, message_id):
@@ -42,18 +43,18 @@ class TextAnalyzer:
         reply_to_message_id = self.message_id if action.is_need_to_reply else None
         if action.answer_type == "text":
             if action.is_interpolation_needed:
-                lang = RzombaLang()
                 if action.answer_text.count("{}") == 1:
                     try:
                         answer_text = action.answer_text.format(self.message_text)
-                    except:
+                    except ValueError:
                         return
-                elif action.answer_text.count("{") != 1 and action.answer_text.count("}") != 1:
+                elif action.answer_text.count("{{") == 1 and action.answer_text.count("}}") == 1:
+                    def_name_as_string = action.answer_text.split("{{")[1].split("}}")[0]
                     try:
-                        answer_text = action.answer_text.format(
-                            publicStaticUsers = lang.usersList()
-                        )
-                    except:
+                        answer_text = locals()[def_name_as_string]()
+                    except KeyError:
+                        bot.send_message(self.chat_id, f"Кто-то через жопу настроил правило, "
+                                                       f"функции {def_name_as_string} не существует")
                         return
                 else:
                     answer_text = action.answer_text.format(self.message_text)
@@ -65,6 +66,7 @@ class TextAnalyzer:
                     answer_text,
                     reply_to_message_id=reply_to_message_id,
                     disable_notification=action.is_need_to_send_quiet,
+                    parse_mode='HTML'
                 )
         else:
             answer_methods = {
