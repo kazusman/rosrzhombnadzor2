@@ -16,6 +16,12 @@ from bot.service.markup import Markup
 from google_vision.service import VisionAPI
 
 
+def get_mention_user(user: User) -> str:
+    if user.username is None:
+        return f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
+    return f'@{user.username}'
+
+
 def user_status(telegram_id: int) -> Optional[str]:
 
     """

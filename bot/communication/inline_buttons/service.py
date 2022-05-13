@@ -12,6 +12,7 @@ from bot.models import User
 from bot.service import ActionProcessor
 from bot.service import get_readable_balance
 from bot.service import text
+from bot.service import get_mention_user
 from bot.service.search_paginator import Paginator
 
 
@@ -77,7 +78,7 @@ class InlineProcessor(ActionProcessor):
         self.bot.edit_message_text(
             text.SEND_AMOUNT.format(
                 get_readable_balance(self.database_user.coins),
-                target_user.username,
+                get_mention_user(target_user),
                 get_readable_balance(target_user.coins),
             ),
             self.chat_id,
@@ -96,9 +97,9 @@ class InlineProcessor(ActionProcessor):
             self._update_balances(author_new_amount, target_user_amount, bet)
             self.bot.edit_message_text(
                 text.BET_FINISHED_HAHA.format(
-                    bet.user.username,
+                    get_mention_user(bet.user),
                     get_readable_balance(bet.user.coins),
-                    self.database_user.username,
+                    get_mention_user(self.database_user),
                     get_readable_balance(self.database_user.coins),
                 ),
                 self.chat_id,
@@ -117,9 +118,9 @@ class InlineProcessor(ActionProcessor):
             self._update_balances(author_new_amount, target_user_amount, bet)
             self.bot.edit_message_text(
                 text.BET_FINISHED_NOT_HAHA.format(
-                    bet.user.username,
+                    get_mention_user(bet.user),
                     get_readable_balance(bet.user.coins),
-                    self.database_user.username,
+                    get_mention_user(self.database_user),
                     get_readable_balance(self.database_user.coins),
                 ),
                 self.chat_id,

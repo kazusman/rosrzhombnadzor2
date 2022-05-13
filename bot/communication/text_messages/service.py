@@ -8,6 +8,7 @@ from bot.service import ActionProcessor
 from bot.service import get_readable_balance
 from bot.service import search_paginator
 from bot.service import text
+from bot.service import get_mention_user
 from bot.service.funny_answer import TextAnalyzer
 
 
@@ -74,8 +75,8 @@ class TextProcessor(ActionProcessor):
             self.bot.send_message(
                 self.chat_id,
                 text.CALL_TARGET_USER.format(
-                    bet.user.username,
-                    bet.bet_target_user.username,
+                    get_mention_user(bet.user),
+                    get_mention_user(bet.bet_target_user),
                     get_readable_balance(bet.amount),
                 ),
                 reply_markup=reply_markup,
@@ -113,7 +114,7 @@ class TextProcessor(ActionProcessor):
                 self.chat_id,
                 text.DONATE_FINISHED.format(
                     get_readable_balance(donate.from_user.coins),
-                    donate.to_user.username,
+                    get_mention_user(donate.to_user),
                     get_readable_balance(donate.to_user.coins),
                 ),
             )
