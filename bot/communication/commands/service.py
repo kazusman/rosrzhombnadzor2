@@ -130,16 +130,20 @@ class CommandProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, text.DONATE_ZERO_BALANCE)
             return
         if self.action.reply_to_message is not None:
-            message = Message.objects.filter(message_id=self.action.reply_to_message.message_id)
+            message = Message.objects.filter(
+                message_id=self.action.reply_to_message.message_id
+            )
             if message:
                 message = message[0]
                 if message.user != self.database_user:
                     donate = self._create_donate(message.user)
                     self.update_status(f"donate_amount:{donate.id}")
-                    self.bot.send_message(self.chat_id,
-                                          text.SEND_DONATE_AMOUNT.format(
-                                              get_readable_balance(self.database_user.coins)
-                                          ))
+                    self.bot.send_message(
+                        self.chat_id,
+                        text.SEND_DONATE_AMOUNT.format(
+                            get_readable_balance(self.database_user.coins)
+                        ),
+                    )
                     return
         users = User.objects.filter(
             ~Q(telegram_id=self.telegram_id), is_deleted=False

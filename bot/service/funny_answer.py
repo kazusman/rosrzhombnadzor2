@@ -14,7 +14,9 @@ def get_users_list():
     for user in users:
         current_user = f"@{user.username}"
         if not user.username:
-            current_user = f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
+            current_user = (
+                f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
+            )
         users_list += current_user + " "
     return users_list
 
@@ -48,13 +50,21 @@ class TextAnalyzer:
                         answer_text = action.answer_text.format(self.message_text)
                     except ValueError:
                         return
-                elif action.answer_text.count("{{") == 1 and action.answer_text.count("}}") == 1:
-                    def_name_as_string = action.answer_text.split("{{")[1].split("}}")[0]
+                elif (
+                    action.answer_text.count("{{") == 1
+                    and action.answer_text.count("}}") == 1
+                ):
+                    def_name_as_string = action.answer_text.split("{{")[1].split("}}")[
+                        0
+                    ]
                     try:
                         answer_text = globals()[def_name_as_string]()
                     except KeyError:
-                        bot.send_message(self.chat_id, f"Кто-то через жопу настроил правило, "
-                                                       f"функции {def_name_as_string} не существует")
+                        bot.send_message(
+                            self.chat_id,
+                            f"Кто-то через жопу настроил правило, "
+                            f"функции {def_name_as_string} не существует",
+                        )
                         return
                 else:
                     answer_text = action.answer_text.format(self.message_text)
@@ -66,7 +76,7 @@ class TextAnalyzer:
                     answer_text,
                     reply_to_message_id=reply_to_message_id,
                     disable_notification=action.is_need_to_send_quiet,
-                    parse_mode='HTML'
+                    parse_mode="HTML",
                 )
         else:
             answer_methods = {

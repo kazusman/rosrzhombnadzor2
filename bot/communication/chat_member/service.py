@@ -28,7 +28,7 @@ class ChatMemberProcessor(ActionProcessor):
             else:
                 self.bot.send_message(self.chat_id, text.WHY_YOU_LEAVE)
                 self.switch_deleted_status(False, database_user)
-            self.update_status('rzhomber', self.database_user)
+            self.update_status("rzhomber", self.database_user)
 
     def process_left_chat_member(self):
         database_user, _ = self._get_database_user(self.action.left_chat_member.id)

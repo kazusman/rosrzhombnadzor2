@@ -10,9 +10,9 @@ from bot.models import Donate
 from bot.models import SearchRequest
 from bot.models import User
 from bot.service import ActionProcessor
+from bot.service import get_mention_user
 from bot.service import get_readable_balance
 from bot.service import text
-from bot.service import get_mention_user
 from bot.service.search_paginator import Paginator
 
 
@@ -83,6 +83,7 @@ class InlineProcessor(ActionProcessor):
             ),
             self.chat_id,
             self.message_id,
+            parse_mode="HTML",
         )
 
     def process_haha_call(self):
@@ -104,6 +105,7 @@ class InlineProcessor(ActionProcessor):
                 ),
                 self.chat_id,
                 self.message_id,
+                parse_mode="HTML",
             )
 
     def process_not_haha_call(self):
@@ -125,6 +127,7 @@ class InlineProcessor(ActionProcessor):
                 ),
                 self.chat_id,
                 self.message_id,
+                parse_mode="HTML",
             )
 
     def process_decline_bet(self):

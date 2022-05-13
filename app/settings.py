@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "bot.apps.BotConfig",
     "google_vision.apps.GoogleVisionConfig",
-    "rest_framework.apps.RestFrameworkConfig"
+    "rest_framework.apps.RestFrameworkConfig",
 ]
 
 MIDDLEWARE = [
@@ -144,7 +144,7 @@ CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_BEAT_SCHEDULE = {
     "monthly_coins": {
         "task": "bot.tasks.give_weekly_coins",
-        "schedule": crontab(day_of_week='mon', hour=12, minute=0),
+        "schedule": crontab(day_of_week="mon", hour=12, minute=0),
     },
     "happy_birthday": {
         "task": "bot.tasks.send_happy_birthday",
@@ -156,19 +156,19 @@ CELERY_BEAT_SCHEDULE = {
     },
     "eight_march_avatar": {
         "task": "bot.tasks.eight_march_avatar",
-        "schedule": crontab(month_of_year=3, day_of_month=8, hour=0, minute=0)
+        "schedule": crontab(month_of_year=3, day_of_month=8, hour=0, minute=0),
     },
     "nine_march_avatar": {
         "task": "bot.tasks.nine_march_avatar",
-        "schedule": crontab(month_of_year=3, day_of_month=9, hour=0, minute=0)
+        "schedule": crontab(month_of_year=3, day_of_month=9, hour=0, minute=0),
     },
 }
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
 }

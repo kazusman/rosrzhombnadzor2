@@ -5,10 +5,10 @@ from telebot import types  # noqa
 
 from bot.models import *
 from bot.service import ActionProcessor
+from bot.service import get_mention_user
 from bot.service import get_readable_balance
 from bot.service import search_paginator
 from bot.service import text
-from bot.service import get_mention_user
 from bot.service.funny_answer import TextAnalyzer
 
 
@@ -80,6 +80,7 @@ class TextProcessor(ActionProcessor):
                     get_readable_balance(bet.amount),
                 ),
                 reply_markup=reply_markup,
+                parse_mode="HTML",
             )
             self.update_status("rzhomber")
         else:
@@ -117,6 +118,7 @@ class TextProcessor(ActionProcessor):
                     get_mention_user(donate.to_user),
                     get_readable_balance(donate.to_user.coins),
                 ),
+                parse_mode="HTML",
             )
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
