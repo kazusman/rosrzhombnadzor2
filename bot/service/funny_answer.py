@@ -8,7 +8,7 @@ from bot.models import *
 from bot.service import text
 
 
-def get_users_list():
+def get_users_list() -> str:
     users = User.objects.filter(is_deleted=False).order_by("-username")
     users_list = ""
     for user in users:
@@ -20,7 +20,7 @@ def get_users_list():
         users_list += current_user + " "
     return users_list
 
-def get_gay_percent():
+def get_gay_percent() -> str:
     gayness = randint(1, 100)
     if gayness == 0:
         result = "вообще базированный натурал без капли гейства"
