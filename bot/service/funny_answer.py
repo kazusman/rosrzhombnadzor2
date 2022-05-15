@@ -21,7 +21,7 @@ def get_users_list() -> str:
     return users_list
 
 def get_gay_percent() -> str:
-    gayness = randint(1, 100)
+    gayness = randint(0, 100)
     if gayness == 0:
         result = "вообще базированный натурал без капли гейства"
     else:
