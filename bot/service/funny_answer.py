@@ -20,6 +20,16 @@ def get_users_list() -> str:
         users_list += current_user + " "
     return users_list
 
+def get_gay_percent() -> str:
+    gayness = randint(0, 100)
+    if gayness == 0:
+        result = "вообще базированный натурал без капли гейства"
+    else:
+        result = f"на {gayness}% гей"
+    
+    answer = f"Кстати, внеплановая проверка на гейство показала, что ты {result}, поздравляю!"
+    
+    return answer
 
 class TextAnalyzer:
     def __init__(self, message_text, chat_id, message_id):
