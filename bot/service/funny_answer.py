@@ -8,7 +8,7 @@ from bot.models import *
 from bot.service import text
 
 
-def get_users_list():
+def get_users_list() -> str:
     users = User.objects.filter(is_deleted=False).order_by("-username")
     users_list = ""
     for user in users:
