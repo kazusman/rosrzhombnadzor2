@@ -8,6 +8,7 @@ from google.api_core.exceptions import ClientError  # noqa
 from telebot import types  # noqa
 
 from bot.models import Message
+from bot.models import User
 from bot.service import ActionProcessor
 from bot.service import text
 from bot.service.demotivator import DemotivatorMaker
@@ -75,7 +76,7 @@ class PhotoProcessor(ActionProcessor):
             )
         if text_on_image != "":
             self.add_text_from_image(message, text_on_image, recognition_type)
-            TextAnalyzer(text_on_image, self.chat_id, self.message_id).analyze()
+            TextAnalyzer(text_on_image, self.chat_id, self.message_id, self.database_user).analyze()
             return
         if self.caption is not None:
-            TextAnalyzer(self.caption, self.chat_id, self.message_id).analyze()
+            TextAnalyzer(self.caption, self.chat_id, self.message_id, self.database_user).analyze()

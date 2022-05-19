@@ -134,4 +134,4 @@ class TextProcessor(ActionProcessor):
             self._process_donate_amount()
         else:
             self.save_message(message_text=self.message_text)
-            TextAnalyzer(self.message_text, self.chat_id, self.message_id).analyze()
+            TextAnalyzer(self.message_text, self.chat_id, self.message_id, self.database_user).analyze()

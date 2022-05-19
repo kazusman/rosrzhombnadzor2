@@ -6,42 +6,12 @@ from telebot.apihelper import ApiTelegramException  # noqa
 from bot.config import bot
 from bot.models import *
 from bot.service import text
-
-
-def get_users_list() -> str:
-    users = User.objects.filter(is_deleted=False).order_by("-username")
-    users_list = ""
-    for user in users:
-        current_user = f"@{user.username}"
-        if not user.username:
-            current_user = (
-                f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
-            )
-        users_list += current_user + " "
-    return users_list
-
-
-def get_gay_percent() -> str:
-    gayness = randint(0, 100)
-    if gayness == 0:
-        result = "вообще базированный натурал без капли гейства"
-    else:
-        result = f"на {gayness}% гей"
-    
-    answer = f"Кстати, внеплановая проверка на гейство показала, что ты {result}, поздравляю!"
-    
-    return answer
-
-
-def get_dick_length() -> str:
-    length = randint(0, 100)
-    if not length:
-        return "У тебя нет хуя, в курсе?"
-    return f"У тебя хуй {length} см, в курсе?"
+from bot.service.smart_answers import SmartAnswer
 
 
 class TextAnalyzer:
-    def __init__(self, message_text, chat_id, message_id):
+    def __init__(self, message_text: str, chat_id: int, message_id: int, user: User):
+        self.user = user
         self.message_text = message_text
         self.chat_id = chat_id
         self.message_id = message_id
@@ -76,13 +46,14 @@ class TextAnalyzer:
                     def_name_as_string = action.answer_text.split("{{")[1].split("}}")[
                         0
                     ]
+                    answer = SmartAnswer(self.user, self.message_text)
                     try:
-                        answer_text = globals()[def_name_as_string]()
-                    except KeyError:
+                        answer_text = getattr(answer, def_name_as_string)()
+                    except AttributeError:
                         bot.send_message(
                             self.chat_id,
                             f"Кто-то через жопу настроил правило, "
-                            f"функции {def_name_as_string} не существует",
+                            f"метода {def_name_as_string} не существует",
                         )
                         return
                 else:
