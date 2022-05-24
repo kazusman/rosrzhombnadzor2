@@ -1,5 +1,6 @@
 from bot.models import User
 from random import randint
+from random import choice
 
 
 class SmartAnswer:
@@ -44,3 +45,7 @@ class SmartAnswer:
         if not length:
             return "У тебя нет хуя, в курсе?"
         return f"У тебя хуй {length} см, в курсе?"
+
+    @staticmethod
+    def get_confirmation() -> str:
+        return choice(["Подтверждаю", "Не подтверждаю"])
