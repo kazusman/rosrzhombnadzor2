@@ -60,14 +60,15 @@ class TextAnalyzer:
                     answer_text = action.answer_text.format(self.message_text)
             else:
                 answer_text = action.answer_text
-            if randint(1, 100) <= action.answer_probability:
-                bot.send_message(
-                    self.chat_id,
-                    answer_text,
-                    reply_to_message_id=reply_to_message_id,
-                    disable_notification=action.is_need_to_send_quiet,
-                    parse_mode="HTML",
-                )
+            if answer_text != "":
+                if randint(1, 100) <= action.answer_probability:
+                    bot.send_message(
+                        self.chat_id,
+                        answer_text,
+                        reply_to_message_id=reply_to_message_id,
+                        disable_notification=action.is_need_to_send_quiet,
+                        parse_mode="HTML",
+                    )
         else:
             answer_methods = {
                 "photo": bot.send_photo,
