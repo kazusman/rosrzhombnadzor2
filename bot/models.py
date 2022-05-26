@@ -66,7 +66,7 @@ class User(models.Model):
     sex = models.CharField(
         max_length=1,
         verbose_name='Sex',
-        choices=[("m", "Male"), ("f", "Female"), ("h", "Helicopter")],
+        choices=[("m", "Male"), ("f", "Female"), ("h", "Helicopter"), ("y", "Yes")],
         default="h"
     )
 
