@@ -29,7 +29,6 @@ class SmartAnswer:
             users_list += current_user + " "
         return users_list
 
-    @staticmethod
     def get_gay_percent(self) -> str:
         natural = "натурал"
         lesborgay = ['гей', 'гейство', 'гейства']
