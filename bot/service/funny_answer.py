@@ -32,7 +32,18 @@ class TextAnalyzer:
 
     def _communicate(self, action):
         reply_to_message_id = self.message_id if action.is_need_to_reply else None
+        answer_methods = {
+            "photo": bot.send_photo,
+            "video": bot.send_video,
+            "audio": bot.send_audio,
+            "sticker": bot.send_sticker,
+            "document": bot.send_document,
+            "voice": bot.send_voice,
+            "animation": bot.send_animation,
+            "video_note": bot.send_video_note,
+        }
         if action.answer_type == "text":
+            answer_type = action.answer_type
             if action.is_interpolation_needed:
                 if action.answer_text.count("{}") == 1:
                     try:
@@ -48,7 +59,7 @@ class TextAnalyzer:
                     ]
                     answer = SmartAnswer(self.user, self.message_text)
                     try:
-                        answer_text = getattr(answer, def_name_as_string)()
+                        answer_text, answer_type = getattr(answer, def_name_as_string)()
                     except AttributeError:
                         bot.send_message(
                             self.chat_id,
@@ -60,26 +71,20 @@ class TextAnalyzer:
                     answer_text = action.answer_text.format(self.message_text)
             else:
                 answer_text = action.answer_text
-            if answer_text != "":
-                if randint(1, 100) <= action.answer_probability:
-                    bot.send_message(
-                        self.chat_id,
-                        answer_text,
-                        reply_to_message_id=reply_to_message_id,
-                        disable_notification=action.is_need_to_send_quiet,
-                        parse_mode="HTML",
-                    )
+            if randint(1, 100) <= action.answer_probability:
+                if answer_text != "":
+                    if answer_type in answer_methods:
+                        method = answer_methods[answer_type]
+                        method(self.chat_id, answer_text)
+                    else:
+                        bot.send_message(
+                            self.chat_id,
+                            answer_text,
+                            reply_to_message_id=reply_to_message_id,
+                            disable_notification=action.is_need_to_send_quiet,
+                            parse_mode="HTML",
+                        )
         else:
-            answer_methods = {
-                "photo": bot.send_photo,
-                "video": bot.send_video,
-                "audio": bot.send_audio,
-                "sticker": bot.send_sticker,
-                "document": bot.send_document,
-                "voice": bot.send_voice,
-                "animation": bot.send_animation,
-                "video_note": bot.send_video_note,
-            }
             send_file = answer_methods[action.answer_type]
             if randint(1, 100) <= action.answer_probability:
                 try:

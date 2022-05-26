@@ -17,7 +17,7 @@ class SmartAnswer:
     #     message_text = self.message_text
 
     @staticmethod
-    def get_users_list() -> str:
+    def get_users_list() -> tuple[str, str]:
         users = User.objects.filter(is_deleted=False).order_by("-username")
         users_list = ""
         for user in users:
@@ -27,9 +27,9 @@ class SmartAnswer:
                     f"<a href='tg://user?id={user.telegram_id}'>{user.first_name}</a>"
                 )
             users_list += current_user + " "
-        return users_list
+        return users_list, "text"
 
-    def get_gay_percent(self) -> str:
+    def get_gay_percent(self) -> tuple[str, str]:
         natural = "натурал"
         lesborgay = ['гей', 'гейство', 'гейства']
         if self.user.sex == 'f':
@@ -43,9 +43,9 @@ class SmartAnswer:
         else:
             result = f"на {gayness}% {lesborgay[0]}"
         answer = f"Кстати, внеплановая проверка на {lesborgay[1]} показала, что ты {result}, поздравляю!"
-        return answer
+        return answer, "text"
 
-    def get_dick_length(self) -> str:
+    def get_dick_length(self) -> tuple[str, str]:
         organ = 'хуя'
         param = "длина"
         unit = "см"
@@ -58,14 +58,14 @@ class SmartAnswer:
             unit = "м"
         length = randint(0, 35)
         if not length:
-            return f"У тебя нет {organ}, в курсе?"
-        return f"У тебя {param} {organ} {length} {unit}, в курсе?"
+            return f"У тебя нет {organ}, в курсе?", "text"
+        return f"У тебя {param} {organ} {length} {unit}, в курсе?", "text"
 
     @staticmethod
-    def get_confirmation() -> str:
-        return choice(["Подтверждаю", "Не подтверждаю"])
+    def get_confirmation() -> tuple[str, str]:
+        return choice(["Подтверждаю", "Не подтверждаю"]), "text"
 
-    def get_rzhomb_award(self) -> str:
+    def get_rzhomb_award(self) -> tuple[str, str]:
         if randint(1, 100) == 1:
             self.user.coins = self.user.coins + 10000
             self.user.save()
@@ -94,5 +94,15 @@ class SmartAnswer:
 ████████████████████████████████████████
 ████████████████████████████████████████
 """
-            return answer
-        return ""
+            return answer, "text"
+        return "", "text"
+
+    def get_bens_opinion(self) -> tuple[str, str]:
+        if self.message_text.endswith("?"):
+            videos = [
+                "BAACAgIAAx0CZ5GD1AACCAtij1_db5K0QQJ_TYLE2qjDNUruOAACMhsAAohqeUjwsbuZC0NqaiQE",
+                "BAACAgIAAx0CZ5GD1AACCAxij2ABB4B6mAnBa3oEUxlKph6oFAACNRsAAohqeUh6mdJCA3GiRCQE",
+                "BAACAgIAAx0CZ5GD1AACCA1ij2AUmGMetmoPDrXHzVb3GuaKQwACNhsAAohqeUjmeeN6mDSwzyQE",
+                "BAACAgIAAx0CZ5GD1AACCA5ij2Am7svYi7jAL_gjZ3H3tP2plwACNxsAAohqeUie2dLcegvhpSQE"
+            ]
+            return choice(videos), "video"
