@@ -30,21 +30,38 @@ class SmartAnswer:
         return users_list
 
     @staticmethod
-    def get_gay_percent() -> str:
+    def get_gay_percent(self) -> str:
+        natural = "натурал"
+        lesborgay = ['гей', 'гейство', 'гейства']
+        if self.user.sex == 'f':
+             lesborgay = ['лесбиянка', 'лейсбийство', 'лесбийства']
+        if self.user.sex == 'h':
+             lesborgay = ['справляешься с боевыми задачами', 'пригодность технической эксплуатации', 'боеприпасов']
+             natural ="развалюха"
         gayness = randint(0, 100)
         if gayness == 0:
-            result = "вообще базированный натурал без капли гейства"
+            result = f"вообще базированный {natural} без капли {lesborgay[2]}"
         else:
-            result = f"на {gayness}% гей"
-        answer = f"Кстати, внеплановая проверка на гейство показала, что ты {result}, поздравляю!"
+            result = f"на {gayness}% {lesborgay[0]}"
+        answer = f"Кстати, внеплановая проверка на {lesborgay[1]} показала, что ты {result}, поздравляю!"
         return answer
 
     @staticmethod
-    def get_dick_length() -> str:
-        length = randint(0, 100)
+    def get_dick_length(self) -> str:
+        organ = 'хуя'
+        param = "длина"
+        unit = "см"
+        if self.user.sex == 'f':
+            organ = 'пизды'
+            param = 'глубина'
+        if self.user.sex == "h":
+            organ = "несущего винта"
+            param = 'диаметр'
+            unit = "м"
+        length = randint(0, 35)
         if not length:
-            return "У тебя нет хуя, в курсе?"
-        return f"У тебя хуй {length} см, в курсе?"
+            return f"У тебя нет {organ}, в курсе?"
+        return f"У тебя {param} {organ} {length} {unit}, в курсе?"
 
     @staticmethod
     def get_confirmation() -> str:
