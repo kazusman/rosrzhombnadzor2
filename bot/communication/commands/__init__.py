@@ -60,3 +60,9 @@ def switch_vision_recognition_command(message: types.Message):
 def demotivator_command(message: types.Message):
 
     CommandProcessor(message).process_demotivator_command()
+
+
+@bot.message_handler(commands=["ben"])
+def ben_command(message: types.Message):
+
+    CommandProcessor(message).process_ben_command()
