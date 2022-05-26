@@ -63,6 +63,13 @@ class User(models.Model):
         max_length=64, verbose_name="Last name", null=True, blank=True
     )
 
+    sex = models.CharField(
+        max_length=1,
+        verbose_name='Sex',
+        choices=[("m", "Male"), ("f", "Female"), ("h", "Helicopter")],
+        default="h"
+    )
+
     coins = models.FloatField(verbose_name="Coins", default=10000)
 
     created_at = models.DateTimeField(verbose_name="Created at", auto_now_add=True)
