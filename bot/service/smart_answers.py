@@ -1,6 +1,12 @@
 from bot.models import User
 from random import randint
 from random import choice
+from bot.models import Message
+from datetime import datetime
+from datetime import timedelta
+from pytz import timezone
+from django.conf import settings
+from bot.service.text import RZHOMB_AWARD
 
 
 class SmartAnswer:
@@ -67,34 +73,16 @@ class SmartAnswer:
 
     def get_rzhomb_award(self) -> tuple[str, str]:
         if randint(1, 100) == 1:
-            self.user.coins = self.user.coins + 10000
-            self.user.save()
-            answer = """
-ПОЗДРАВЛЯЮ!
-Вы получаете ЗОЛОТУЮ РЖОМБУ и 10 000 Ржомбкоинов в качестве приза!
-Вероятность этого события - 1%!
-████████████████████████████████████████
-████████████████████████████████████████
-██████▀░░░░░░░░▀████████▀▀░░░░░░░▀██████
-████▀░░░░░░░░░░░░▀████▀░░░░░░░░░░░░▀████
-██▀░░░░░░░░░░░░░░░░▀▀░░░░░░░░░░░░░░░░▀██
-██░░░░░░░░░░░░░░░░░░░▄▄░░░░░░░░░░░░░░░██
-██░░░░░░░░░░░░░░░░░░█░█░░░░░░░░░░░░░░░██
-██░░░░░░░░░░░░░░░░░▄▀░█░░░░░░░░░░░░░░░██
-██░░░░░░░░░░████▄▄▄▀░░▀▀▀▀▄░░░░░░░░░░░██
-██▄░░░░░░░░░████░░░░░░░░░░█░░░░░░░░░░▄██
-████▄░░░░░░░████░░░░░░░░░░█░░░░░░░░▄████
-██████▄░░░░░████▄▄▄░░░░░░░█░░░░░░▄██████
-████████▄░░░▀▀▀▀░░░▀▀▀▀▀▀▀░░░░░▄████████
-██████████▄░░░░░░░░░░░░░░░░░░▄██████████
-████████████▄░░░░░░░░░░░░░░▄████████████
-██████████████▄░░░░░░░░░░▄██████████████
-████████████████▄░░░░░░▄████████████████
-██████████████████▄▄▄▄██████████████████
-████████████████████████████████████████
-████████████████████████████████████████
-"""
-            return answer, "text"
+            filter_datetime = datetime.now(timezone(settings.TIME_ZONE)) - timedelta(hours=24)
+            rzhomb_messages = Message.objects.filter(user=self.user, message_text__icontains="ржомб",
+                                                     created_at_gte=filter_datetime)
+            if len(rzhomb_messages) < 10:
+                self.user.coins = self.user.coins + 10000
+                self.user.save()
+                return RZHOMB_AWARD, "text"
+            else:
+                return "Ты мог бы получить награду, но слишком много раз за последние 24 часа написал слово ржомба," \
+                       "поэтому нюхай бебру", "text"
         return "", "text"
 
     def get_bens_opinion(self) -> tuple[str, str]:
