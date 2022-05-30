@@ -205,7 +205,8 @@ class CommandProcessor(ActionProcessor):
             try:
                 video = YouTube(self.action.reply_to_message.text)
                 resolutions = sorted(list(set([int(stream.resolution[:-1]) for stream in video.streams if
-                               stream.mime_type == "video/mp4" and stream._filesize < 50000000])), reverse=True)
+                               stream.mime_type == "video/mp4" and stream._filesize < 50000000
+                                               and stream._filesize != 0])), reverse=True)
                 if not resolutions:
                     self.bot.send_message(self.chat_id, "Даже в самом шакальном качестве видос весит больше 50мб "
                                                         "и телеграм не даст его отправить через бота, сосать")

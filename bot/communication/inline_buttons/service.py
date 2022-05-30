@@ -209,7 +209,7 @@ class InlineProcessor(ActionProcessor):
             video = YouTube(message.message_text)
             for stream in video.streams:
                 if stream.mime_type == "video/mp4" and stream.resolution[:-1] == resolution and \
-                        stream._filesize < 50000000:
+                        stream._filesize < 50000000 and stream._filesize != 0:
                     file_path = stream.download()
                     self.bot.edit_message_text("Скачал, отправляю", self.chat_id, self.message_id)
                     self.bot.send_chat_action(self.chat_id, "upload_video")
