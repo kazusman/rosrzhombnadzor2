@@ -160,6 +160,10 @@ class Message(models.Model):
         verbose_name="Text from image", null=True, blank=True
     )
 
+    text_from_audio = models.TextField(
+        verbose_name="Text from audio", null=True, blank=True
+    )
+
     recognition_type = models.CharField(
         max_length=32, null=True, blank=True, verbose_name="Recognition type"
     )

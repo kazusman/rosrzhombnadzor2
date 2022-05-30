@@ -3,6 +3,8 @@ from typing import Optional
 
 from django.conf import settings
 from django.db.models import QuerySet
+from django.db.models import Q
+
 
 from bot.models import Message
 from bot.models import SearchRequest
@@ -49,7 +51,7 @@ class Paginator:
 
     def _get_all_messages(self):
         self.messages = Message.objects.filter(
-            text_on_image__icontains=self.message_text
+            Q(text_on_image__icontains=self.message_text) | Q(text_from_audio__icontains=self.message_text)
         ).order_by("created_at")
 
     @staticmethod

@@ -56,3 +56,5 @@ class VideoProcessor(ActionProcessor):
         if self._save_video():
             recognition_type, text_on_image = self.get_text_from_image(database_message)
             self.add_text_from_image(database_message, text_on_image, recognition_type)
+            text_from_audio = self.get_text_from_audio(database_message)
+            self.add_text_from_audio(database_message, text_from_audio)

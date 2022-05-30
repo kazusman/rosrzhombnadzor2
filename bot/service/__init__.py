@@ -14,6 +14,7 @@ from bot.models import User
 from bot.service.decorators import check_chat
 from bot.service.markup import Markup
 from google_vision.service import VisionAPI
+from google_vision.service import SpeechToTextAPI
 
 
 def get_mention_user(user: User) -> str:
@@ -240,6 +241,11 @@ class ActionProcessor(BotUser):
         return vision_api.get_text_from_photo()
 
     @staticmethod
+    def get_text_from_audio(message: Message) -> str:
+        speech_api = SpeechToTextAPI(message)
+        return speech_api.convert_speech_to_text()
+
+    @staticmethod
     def add_text_from_image(
         message: Message, text_on_image: str, recognition_type: str
     ):
@@ -247,6 +253,11 @@ class ActionProcessor(BotUser):
             text_on_image,
             recognition_type,
         )
+        message.save()
+
+    @staticmethod
+    def add_text_from_audio(message: Message, text_from_audio: str):
+        message.text_from_audio = text_from_audio
         message.save()
 
     def save_message(
