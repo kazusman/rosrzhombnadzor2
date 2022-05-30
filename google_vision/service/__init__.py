@@ -118,20 +118,21 @@ class SpeechToTextAPI:
         with open(self.audio_from_video_path, "rb") as audio:
             audio_bytes = audio.read()
         audio_mp3 = speech_v1.RecognitionAudio(content=audio_bytes)
-        language_codes = ["en-US", "ru-RU"]
+        main_language_code = "ru-RU"
+        additional_language_codes = ["en-US"]
         text_from_audio = ""
-        for language in language_codes:
-            config = speech_v1.RecognitionConfig(
-                sample_rate_hertz=48000,
-                enable_automatic_punctuation=False,
-                language_code=language
-            )
-            response = self.speech_client.recognize(
-                config=config,
-                audio=audio_mp3
-            )
-            for result in response.results:
-                alternative = result.alternatives[0]
-                text = alternative.transcript
-                text_from_audio += f'{text}\n'
+        config = speech_v1.RecognitionConfig(
+            sample_rate_hertz=48000,
+            enable_automatic_punctuation=False,
+            language_code=main_language_code,
+            alternative_language_codes=additional_language_codes
+        )
+        response = self.speech_client.recognize(
+            config=config,
+            audio=audio_mp3
+        )
+        for result in response.results:
+            alternative = result.alternatives[0]
+            text = alternative.transcript
+            text_from_audio += f'{text}'
         return text_from_audio
