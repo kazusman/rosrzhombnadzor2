@@ -43,6 +43,7 @@ pyparsing==3.0.7
 pyTelegramBotAPI==4.4.0
 pytesseract==0.3.9
 python-dotenv==0.19.2
+pytube==12.1.0
 pytz==2021.3
 requests==2.27.1
 rsa==4.8

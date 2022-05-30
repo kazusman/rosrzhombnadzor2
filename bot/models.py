@@ -381,3 +381,30 @@ class SearchRequest(models.Model):
 
     def __str__(self):
         return truncatechars(self.search_text, 50)
+
+
+class DownloadRequest(models.Model):
+
+    user = models.ForeignKey(
+        to=User,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name="User"
+    )
+
+    message = models.ForeignKey(
+        to=Message,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name="Message"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Created at"
+    )
+
+    class Meta:
+        verbose_name = "Download request"
+        verbose_name_plural = "Download requests"
+
+    def __str__(self):
+        return self.user.__str__()

@@ -76,3 +76,9 @@ def amount_of_pages(call: types.CallbackQuery):
 def get_page_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_turn_over_page()
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("download"))
+def download_call(call: types.CallbackQuery):
+
+    InlineProcessor(call).process_download_video_call()

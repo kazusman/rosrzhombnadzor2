@@ -1,14 +1,18 @@
+import os
 from datetime import datetime
 from typing import Union
 
 from django.conf import settings
 from pytz import timezone
 from telebot import types  # noqa
+from pytube import YouTube
+from pytube.exceptions import RegexMatchError, PytubeError
 
 from bot.models import Bet
 from bot.models import Donate
 from bot.models import SearchRequest
 from bot.models import User
+from bot.models import Message
 from bot.service import ActionProcessor
 from bot.service import get_mention_user
 from bot.service import get_readable_balance
@@ -196,3 +200,25 @@ class InlineProcessor(ActionProcessor):
         self.bot.edit_message_reply_markup(
             self.chat_id, self.message_id, reply_markup=reply_markup
         )
+
+    def process_download_video_call(self):
+        try:
+            self.bot.edit_message_text("Качаю...", self.chat_id, self.message_id)
+            _, resolution, message_id = self.call_data.split(":")
+            message = Message.objects.get(id=int(message_id))
+            video = YouTube(message.message_text)
+            for stream in video.streams:
+                if stream.mime_type == "video/mp4" and stream.resolution[:-1] == resolution and \
+                        stream._filesize < 50000000:
+                    file_path = stream.download()
+                    self.bot.edit_message_text("Скачал, отправляю", self.chat_id, self.message_id)
+                    self.bot.send_chat_action(self.chat_id, "upload_video")
+                    with open(file_path, "rb") as video:
+                        self.bot.send_video(self.chat_id, video, caption=stream.title)
+                    os.remove(file_path)
+                    break
+        except KeyError:
+            self.bot.edit_message_text("Какая-то внутренная ошибка библиотеки для скачивания, не в этот раз",
+                                       self.chat_id, self.message_id)
+        except Exception as error:
+            self.bot.edit_message_text(f"Словил ошибку при скачивании: {error.__class__.__name__}\n\n{error}")
