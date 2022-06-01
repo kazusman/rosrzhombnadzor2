@@ -162,6 +162,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "bot.tasks.nine_march_avatar",
         "schedule": crontab(month_of_year=3, day_of_month=9, hour=0, minute=0),
     },
+    "lazy_users_check": {
+        "task": "bot.tasks.lazy_users_check",
+        "schedule": crontab(hour=15, minute=0)
+    }
 }
 
 

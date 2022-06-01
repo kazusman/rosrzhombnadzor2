@@ -5,6 +5,7 @@ from bot.service.jobs import happy_birthday_messages
 from bot.service.jobs import send_daily_stat
 from bot.service.jobs import set_eight_march_avatar
 from bot.service.jobs import set_nine_march_avatar
+from bot.service.jobs import kick_lazy_users
 
 
 @shared_task
@@ -30,3 +31,8 @@ def eight_march_avatar():
 @shared_task
 def nine_march_avatar():
     set_nine_march_avatar()
+
+
+@shared_task
+def lazy_users_check():
+    kick_lazy_users()

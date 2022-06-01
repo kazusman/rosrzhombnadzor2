@@ -9,6 +9,7 @@ from bot.config import bot
 from bot.models import Bet
 from bot.models import Donate
 from bot.models import User
+from bot.models import Message
 from bot.service import get_readable_balance
 from bot.service import get_years_decade
 from bot.service import text
@@ -84,3 +85,14 @@ def set_nine_march_avatar():
         os.path.join(settings.BASE_DIR, "bot", "templates", "previous.jpg"), "rb"
     ) as avatar:
         bot.set_chat_photo(settings.CHAT_ID, avatar)
+
+
+def kick_lazy_users():
+    all_users = User.objects.filter(is_deleted=False)
+    max_datetime = datetime.now(timezone(settings.TIME_ZONE)) - timedelta(days=90)
+    for user in all_users:
+        if len(Message.objects.filter(user=user, created_at__gt=max_datetime)) == 0:
+            bot.kick_chat_member(settings.CHAT_ID, user.telegram_id)
+            bot.send_message(settings.CHAT_ID, "Этот челик 3 месяца не кидал мемы :(")
+            user.is_deleted = True
+            user.save()
