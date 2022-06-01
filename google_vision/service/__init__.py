@@ -7,8 +7,8 @@ import cv2
 import moviepy.editor as mp
 import pytesseract
 from django.conf import settings
-from google.cloud import vision_v1  # noqa
 from google.cloud import speech_v1
+from google.cloud import vision_v1  # noqa
 from google.cloud.vision_v1 import AnnotateImageResponse
 from google.cloud.vision_v1 import types
 from google.protobuf.json_format import MessageToJson
@@ -87,7 +87,6 @@ class VisionAPI:
 
 
 class SpeechToTextAPI:
-
     def __init__(self, message: Message):
         self.message = message
         self.credential_file = settings.GOOGLE_CREDENTIALS_FILE_PATH
@@ -125,14 +124,11 @@ class SpeechToTextAPI:
             sample_rate_hertz=48000,
             enable_automatic_punctuation=False,
             language_code=main_language_code,
-            alternative_language_codes=additional_language_codes
+            alternative_language_codes=additional_language_codes,
         )
-        response = self.speech_client.recognize(
-            config=config,
-            audio=audio_mp3
-        )
+        response = self.speech_client.recognize(config=config, audio=audio_mp3)
         for result in response.results:
             alternative = result.alternatives[0]
             text = alternative.transcript
-            text_from_audio += f'{text}'
+            text_from_audio += f"{text}"
         return text_from_audio

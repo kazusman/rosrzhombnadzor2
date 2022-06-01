@@ -54,6 +54,7 @@ class TextProcessor(ActionProcessor):
         bet.save()
 
     def _process_bet_amount(self):
+        self.bot.delete_message(self.chat_id, self.message_id)
         bet_id = int(self.status.split(":")[1])
         if self._is_float():
             float_amount = round(float(self.amount), 2)
@@ -77,7 +78,6 @@ class TextProcessor(ActionProcessor):
                 text.CALL_TARGET_USER.format(
                     get_mention_user(bet.user),
                     get_mention_user(bet.bet_target_user),
-                    get_readable_balance(bet.amount),
                 ),
                 reply_markup=reply_markup,
                 parse_mode="HTML",
@@ -134,4 +134,6 @@ class TextProcessor(ActionProcessor):
             self._process_donate_amount()
         else:
             self.save_message(message_text=self.message_text)
-            TextAnalyzer(self.message_text, self.chat_id, self.message_id, self.database_user).analyze()
+            TextAnalyzer(
+                self.message_text, self.chat_id, self.message_id, self.database_user
+            ).analyze()

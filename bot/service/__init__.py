@@ -13,8 +13,8 @@ from bot.models import Status
 from bot.models import User
 from bot.service.decorators import check_chat
 from bot.service.markup import Markup
-from google_vision.service import VisionAPI
 from google_vision.service import SpeechToTextAPI
+from google_vision.service import VisionAPI
 
 
 def get_mention_user(user: User) -> str:

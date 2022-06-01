@@ -65,9 +65,9 @@ class User(models.Model):
 
     sex = models.CharField(
         max_length=1,
-        verbose_name='Sex',
+        verbose_name="Sex",
         choices=[("m", "Male"), ("f", "Female"), ("h", "Helicopter"), ("y", "Yes")],
-        default="h"
+        default="h",
     )
 
     coins = models.FloatField(verbose_name="Coins", default=10000)
@@ -386,21 +386,14 @@ class SearchRequest(models.Model):
 class DownloadRequest(models.Model):
 
     user = models.ForeignKey(
-        to=User,
-        on_delete=ON_DELETE_VALUE[settings.DEBUG],
-        verbose_name="User"
+        to=User, on_delete=ON_DELETE_VALUE[settings.DEBUG], verbose_name="User"
     )
 
     message = models.ForeignKey(
-        to=Message,
-        on_delete=ON_DELETE_VALUE[settings.DEBUG],
-        verbose_name="Message"
+        to=Message, on_delete=ON_DELETE_VALUE[settings.DEBUG], verbose_name="Message"
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Created at"
-    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     class Meta:
         verbose_name = "Download request"

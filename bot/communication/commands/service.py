@@ -4,9 +4,10 @@ from typing import Union
 
 from django.db.models import ObjectDoesNotExist
 from django.db.models import Q
-from telebot import types  # noqa
 from pytube import YouTube
-from pytube.exceptions import RegexMatchError, PytubeError
+from pytube.exceptions import PytubeError
+from pytube.exceptions import RegexMatchError
+from telebot import types  # noqa
 
 from bot.models import *
 from bot.service import ActionProcessor
@@ -193,7 +194,7 @@ class CommandProcessor(ActionProcessor):
             "BAACAgIAAx0CZ5GD1AACCAtij1_db5K0QQJ_TYLE2qjDNUruOAACMhsAAohqeUjwsbuZC0NqaiQE",
             "BAACAgIAAx0CZ5GD1AACCAxij2ABB4B6mAnBa3oEUxlKph6oFAACNRsAAohqeUh6mdJCA3GiRCQE",
             "BAACAgIAAx0CZ5GD1AACCA1ij2AUmGMetmoPDrXHzVb3GuaKQwACNhsAAohqeUjmeeN6mDSwzyQE",
-            "BAACAgIAAx0CZ5GD1AACCA5ij2Am7svYi7jAL_gjZ3H3tP2plwACNxsAAohqeUie2dLcegvhpSQE"
+            "BAACAgIAAx0CZ5GD1AACCA5ij2Am7svYi7jAL_gjZ3H3tP2plwACNxsAAohqeUie2dLcegvhpSQE",
         ]
         self.bot.send_video_note(self.chat_id, choice(videos))
 
@@ -201,27 +202,57 @@ class CommandProcessor(ActionProcessor):
         if self.action.reply_to_message is None:
             self.bot.send_message(self.chat_id, text.NEED_TO_REPLY_TO_DOWNLOAD)
         else:
-            self.bot.send_chat_action(self.chat_id, 'typing')
+            self.bot.send_chat_action(self.chat_id, "typing")
             try:
                 video = YouTube(self.action.reply_to_message.text)
-                resolutions = sorted(list(set([int(stream.resolution[:-1]) for stream in video.streams if
-                               stream.mime_type == "video/mp4" and stream._filesize < 50000000
-                                               and stream._filesize != 0])), reverse=True)
+                resolutions = sorted(
+                    list(
+                        set(
+                            [
+                                int(stream.resolution[:-1])
+                                for stream in video.streams
+                                if stream.mime_type == "video/mp4"
+                                and stream._filesize < 50000000
+                                and stream._filesize != 0
+                            ]
+                        )
+                    ),
+                    reverse=True,
+                )
                 if not resolutions:
-                    self.bot.send_message(self.chat_id, "Даже в самом шакальном качестве видос весит больше 50мб "
-                                                        "и телеграм не даст его отправить через бота, сосать")
+                    self.bot.send_message(
+                        self.chat_id,
+                        "Даже в самом шакальном качестве видос весит больше 50мб "
+                        "и телеграм не даст его отправить через бота, сосать",
+                    )
                 else:
-                    message = Message.objects.get(message_id=self.action.reply_to_message.id)
-                    reply_markup = self.markup.get_download_buttons(resolutions, message.id)
-                    self.bot.send_message(self.chat_id, text.SELECT_RESOLUTION, reply_to_message_id=message.message_id,
-                                          reply_markup=reply_markup)
+                    message = Message.objects.get(
+                        message_id=self.action.reply_to_message.id
+                    )
+                    reply_markup = self.markup.get_download_buttons(
+                        resolutions, message.id
+                    )
+                    self.bot.send_message(
+                        self.chat_id,
+                        text.SELECT_RESOLUTION,
+                        reply_to_message_id=message.message_id,
+                        reply_markup=reply_markup,
+                    )
             except RegexMatchError:
                 self.bot.send_message(self.chat_id, "Это не ютуб, уважаемый")
             except PytubeError as error:
-                self.bot.send_message(self.chat_id, f"Не могу скачать это видео, ошибка: "
-                                                    f"{error.__class__.__name__}\n\n{error}")
+                self.bot.send_message(
+                    self.chat_id,
+                    f"Не могу скачать это видео, ошибка: "
+                    f"{error.__class__.__name__}\n\n{error}",
+                )
             except Message.DoesNotExist:
-                self.bot.send_message(self.chat_id, "Почему-то это сообщение не сохранилось в БД, не могу начать "
-                                                    "скачивание")
+                self.bot.send_message(
+                    self.chat_id,
+                    "Почему-то это сообщение не сохранилось в БД, не могу начать "
+                    "скачивание",
+                )
             except Exception as error:
-                self.bot.send_message(self.chat_id, f'{error.__class__.__name__}\n\n{error}')
+                self.bot.send_message(
+                    self.chat_id, f"{error.__class__.__name__}\n\n{error}"
+                )

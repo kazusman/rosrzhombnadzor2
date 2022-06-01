@@ -140,9 +140,15 @@ class Markup:
         return markup
 
     @staticmethod
-    def get_download_buttons(resolutions: list, message_id: int) -> InlineKeyboardMarkup:
+    def get_download_buttons(
+        resolutions: list, message_id: int
+    ) -> InlineKeyboardMarkup:
         markup = InlineKeyboardMarkup(row_width=3)
-        buttons = [InlineKeyboardButton(f"{resolution}p", callback_data=f'download:{resolution}:{message_id}')
-                   for resolution in resolutions]
+        buttons = [
+            InlineKeyboardButton(
+                f"{resolution}p", callback_data=f"download:{resolution}:{message_id}"
+            )
+            for resolution in resolutions
+        ]
         markup.add(*buttons)
         return markup
