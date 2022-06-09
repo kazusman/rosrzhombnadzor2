@@ -57,7 +57,7 @@ class PhotoProcessor(ActionProcessor):
             message_text=self.action.caption,
             file_id=self.action.photo[-1].file_id,
         )
-        if randint(1, 100) <= 15:
+        if randint(1, 100) <= 5:
             demotivator_path = DemotivatorMaker(
                 self.downloaded_file_path
             ).create_demotivator()

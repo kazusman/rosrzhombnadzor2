@@ -2,10 +2,10 @@ from celery import shared_task
 
 from bot.service.jobs import give_money
 from bot.service.jobs import happy_birthday_messages
+from bot.service.jobs import kick_lazy_users
 from bot.service.jobs import send_daily_stat
 from bot.service.jobs import set_eight_march_avatar
 from bot.service.jobs import set_nine_march_avatar
-from bot.service.jobs import kick_lazy_users
 
 
 @shared_task

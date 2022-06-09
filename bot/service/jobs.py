@@ -8,8 +8,8 @@ from pytz import timezone
 from bot.config import bot
 from bot.models import Bet
 from bot.models import Donate
-from bot.models import User
 from bot.models import Message
+from bot.models import User
 from bot.service import get_readable_balance
 from bot.service import get_years_decade
 from bot.service import text

@@ -164,8 +164,8 @@ CELERY_BEAT_SCHEDULE = {
     },
     "lazy_users_check": {
         "task": "bot.tasks.lazy_users_check",
-        "schedule": crontab(hour=15, minute=0)
-    }
+        "schedule": crontab(hour=15, minute=0),
+    },
 }
 
 
