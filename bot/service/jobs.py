@@ -60,9 +60,12 @@ def send_daily_stat():
     if len(yesterday_bets) != 0 or len(yesterday_donates) != 0:
         stat_text = ""
         users = User.objects.filter(is_deleted=False).order_by("-coins")
+        total_amount = 0
         for user in users:
             username = user.username if user.username is not None else user.first_name
+            total_amount += user.coins
             stat_text += f"{username}: {get_readable_balance(user.coins)}\n"
+        stat_text += f"Банк: {total_amount} Ржомбакоинов"
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
 
 

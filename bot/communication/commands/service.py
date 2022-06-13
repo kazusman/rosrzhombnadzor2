@@ -124,9 +124,12 @@ class CommandProcessor(ActionProcessor):
     def process_stat_command(self):
         users = User.objects.filter(is_deleted=False).order_by("-coins")
         stat_text = ""
+        total_amount = 0
         for user in users:
             username = user.username if user.username is not None else user.first_name
+            total_amount += user.coins
             stat_text += f"{username}: {get_readable_balance(user.coins)}\n"
+        stat_text += f"Банк: {total_amount} Ржомбакоинов"
         self.bot.send_message(self.chat_id, text.DAILY_STAT.format(stat_text))
 
     def process_donate_command(self):
