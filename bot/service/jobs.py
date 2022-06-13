@@ -65,7 +65,7 @@ def send_daily_stat():
             username = user.username if user.username is not None else user.first_name
             total_amount += user.coins
             stat_text += f"{username}: {get_readable_balance(user.coins)}\n"
-        stat_text += f"Банк: {total_amount} Ржомбакоинов"
+        stat_text += f"\nБанк: {get_readable_balance(total_amount)} Ржомбакоинов"
         bot.send_message(settings.CHAT_ID, text.DAILY_STAT.format(stat_text))
 
 
