@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+echo "PULLING"
+
+git pull origin main
+
 echo "STARTING SERVICES"
 
 sudo docker-compose up -d --force-recreate --build
