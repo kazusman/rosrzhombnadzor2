@@ -70,7 +70,7 @@ class User(models.Model):
         default="h",
     )
 
-    coins = models.FloatField(verbose_name="Coins", default=10000)
+    coins = models.FloatField(verbose_name="Coins", default=3000)
 
     created_at = models.DateTimeField(verbose_name="Created at", auto_now_add=True)
 

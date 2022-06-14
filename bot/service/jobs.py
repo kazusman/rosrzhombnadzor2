@@ -33,7 +33,7 @@ def happy_birthday_messages():
     )
     if len(users) != 0:
         for user in users:
-            user.coins = user.coins + 10000
+            user.coins = user.coins + 2500
             user.save()
             message = bot.send_message(
                 settings.CHAT_ID,
