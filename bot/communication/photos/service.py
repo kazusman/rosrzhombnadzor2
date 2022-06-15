@@ -57,14 +57,6 @@ class PhotoProcessor(ActionProcessor):
             message_text=self.action.caption,
             file_id=self.action.photo[-1].file_id,
         )
-        if randint(1, 100) <= 5:
-            demotivator_path = DemotivatorMaker(
-                self.downloaded_file_path
-            ).create_demotivator()
-            with open(demotivator_path, "rb") as demotivator:
-                self.bot.send_photo(
-                    self.chat_id, demotivator, reply_to_message_id=self.message_id
-                )
         try:
             recognition_type, text_on_image = self.get_text_from_image(message)
         except ClientError as error:
@@ -84,3 +76,11 @@ class PhotoProcessor(ActionProcessor):
             TextAnalyzer(
                 self.caption, self.chat_id, self.message_id, self.database_user
             ).analyze()
+        if randint(1, 100) <= 5:
+            demotivator_path = DemotivatorMaker(
+                self.downloaded_file_path
+            ).create_demotivator()
+            with open(demotivator_path, "rb") as demotivator:
+                self.bot.send_photo(
+                    self.chat_id, demotivator, reply_to_message_id=self.message_id
+                )
