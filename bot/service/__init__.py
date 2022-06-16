@@ -1,6 +1,7 @@
 import hashlib
 import os
 from datetime import datetime
+from random import choice
 from typing import Optional
 from typing import Union
 
@@ -201,6 +202,8 @@ class BotUser(BotChat):
             self.database_user.save()
         else:
             user.is_deleted = deleted_status
+            if deleted_status:
+                user.coins = 0
             user.save()
 
 
@@ -291,3 +294,21 @@ class ActionProcessor(BotUser):
         file_bytes = self.bot.download_file(file_path)
         self._save_photo(file_bytes)
         return file_bytes
+
+    @staticmethod
+    def split_deleted_user_money(coins: float):
+        active_users = User.objects.filter(is_deleted=False)
+        random_user: User = choice(active_users)
+        whole_coins_per_user = coins // len(active_users)
+        if whole_coins_per_user > 0:
+            sent_coins_amount = 0
+            for user in active_users:
+                user.coins += whole_coins_per_user
+                user.save()
+                sent_coins_amount += whole_coins_per_user
+            random_user.coins += coins - sent_coins_amount
+            random_user.save()
+
+        else:
+            random_user.coins += coins
+            random_user.save()

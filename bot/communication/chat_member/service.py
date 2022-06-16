@@ -4,6 +4,7 @@ from telebot import types  # noqa
 
 from bot.models import *
 from bot.service import ActionProcessor
+from bot.service import get_mention_user
 from bot.service import text
 
 
@@ -32,5 +33,13 @@ class ChatMemberProcessor(ActionProcessor):
 
     def process_left_chat_member(self):
         database_user, _ = self._get_database_user(self.action.left_chat_member.id)
+        user_coins = database_user.coins
         self.switch_deleted_status(True, database_user)
         self.bot.send_message(self.chat_id, text.BYE)
+        if user_coins > 0:
+            self.split_deleted_user_money(user_coins)
+            self.bot.send_message(
+                self.chat_id,
+                text.MONEY_SPLITTED.format(get_mention_user(database_user)),
+                parse_mode="HTML",
+            )

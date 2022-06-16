@@ -134,3 +134,5 @@ RZHOMB_AWARD = """
 
 
 SELECT_RESOLUTION = "Выбери качество"
+
+MONEY_SPLITTED = "Раскидал Ржомбакоины юзера {} на всех участников чата"
