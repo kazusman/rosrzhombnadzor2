@@ -256,10 +256,11 @@ class InlineProcessor(ActionProcessor):
             )
 
     def process_default_bet_amount_call(self):
-        _, bet_id, amount = self.call_data.split(':')
-        bet_id = int(bet_id)
-        bet = Bet.objects.get(id=bet_id)
-        if self.database_user != bet.user:
+        try:
+            _, bet_id, amount = self.call_data.split(':')
+            bet_id = int(bet_id)
+            bet = Bet.objects.get(id=bet_id)
+        except ValueError:
             self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
             return
         if amount == "full":
@@ -291,9 +292,10 @@ class InlineProcessor(ActionProcessor):
         self.update_status("rzhomber")
 
     def process_default_donate_call(self):
-        donate_id = int(self.status.split(":")[1])
-        donate = Donate.objects.get(id=donate_id)
-        if self.database_user != donate.from_user:
+        try:
+            donate_id = int(self.status.split(":")[1])
+            donate = Donate.objects.get(id=donate_id)
+        except IndexError:
             self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
             return
         if self.call_data == "full":
