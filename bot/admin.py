@@ -162,3 +162,19 @@ class DemotivatorTextAdmin(admin.ModelAdmin):
 
     list_display = ("id", "text")
     list_display_links = list_display
+
+
+@admin.register(DefaultBetAmount)
+class DefaultBetAmountAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "user", "amount")
+
+    list_display_links = list_display
+
+
+@admin.register(DefaultDonateAmount)
+class DefaultDonateAmountAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "user", "amount")
+
+    list_display_links = list_display

@@ -48,8 +48,8 @@ class CommandProcessor(ActionProcessor):
             user=self.database_user, message=message, bot_message_id=new_message.id
         )
 
-    def _create_donate(self, to_user: Optional[User] = None) -> Donate:
-        return Donate.objects.create(from_user=self.database_user, to_user=to_user)
+    def _create_donate(self, message_id: int, to_user: Optional[User] = None) -> Donate:
+        return Donate.objects.create(from_user=self.database_user, to_user=to_user, bot_message_id=message_id)
 
     def _get_replied_message(self) -> Optional[Message]:
         try:
@@ -97,15 +97,18 @@ class CommandProcessor(ActionProcessor):
             self.bot.send_message(self.chat_id, text.LETS_SEARCH)
 
     def process_bet_command(self):
-        if self.action.reply_to_message is None:
-            self.bot.send_message(self.chat_id, text.NEED_TO_REPLY)
-        elif self.database_user.coins == 0:
-            self.bot.send_video(
-                self.chat_id,
-                "BAACAgIAAx0CR_H_4AACklRiFW6us_ckKu7dPtN0k4Z6XyN_CQAC4hQAArxdqEi3SfbD7ZuF3yME",
-            )
-        else:
-            self._create_bet()
+        try:
+            if self.action.reply_to_message is None:
+                self.bot.send_message(self.chat_id, text.NEED_TO_REPLY)
+            elif self.database_user.coins == 0:
+                self.bot.send_video(
+                    self.chat_id,
+                    "BAACAgIAAx0CR_H_4AACklRiFW6us_ckKu7dPtN0k4Z6XyN_CQAC4hQAArxdqEi3SfbD7ZuF3yME",
+                )
+            else:
+                self._create_bet()
+        except Exception as error:
+            self.bot.send_message(self.chat_id, f"{error.__class__.__name__}\n{error}")
 
     def process_random_command(self):
         random_message: Message = choice(Message.objects.filter(message_type="photo"))
@@ -143,24 +146,26 @@ class CommandProcessor(ActionProcessor):
             if message:
                 message = message[0]
                 if message.user != self.database_user:
-                    donate = self._create_donate(message.user)
-                    self.update_status(f"donate_amount:{donate.id}")
-                    self.bot.send_message(
+                    reply_markup = self.markup.get_default_donate_amount()
+                    bot_message = self.bot.send_message(
                         self.chat_id,
                         text.SEND_DONATE_AMOUNT.format(
                             get_readable_balance(self.database_user.coins)
                         ),
+                        reply_markup=reply_markup
                     )
+                    donate = self._create_donate(bot_message.id, message.user)
+                    self.update_status(f"donate_amount:{donate.id}")
                     return
         users = User.objects.filter(
             ~Q(telegram_id=self.telegram_id), is_deleted=False
         ).order_by("username")
-        donate = self._create_donate()
-        self.update_status(f"donate_id:{donate.id}")
         reply_markup = self.markup.donate_user_list(users)
-        self.bot.send_message(
+        bot_message = self.bot.send_message(
             self.chat_id, text.SELECT_MONEY_RECEIVER, reply_markup=reply_markup
         )
+        donate = self._create_donate(bot_message.id)
+        self.update_status(f"donate_id:{donate.id}")
 
     def process_switch_vision_recognition(self):
         readable_recognition_type = {"google": "Google", "local": "Tesseract"}

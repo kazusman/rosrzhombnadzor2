@@ -59,6 +59,7 @@ class TextProcessor(ActionProcessor):
         if self._is_float():
             float_amount = round(float(self.amount), 2)
             bet = Bet.objects.get(id=bet_id)
+            self.bot.edit_message_reply_markup(self.chat_id, bet.bot_message_id)
             if float_amount > self.database_user.coins:
                 self.bot.send_message(self.chat_id, text.TOO_MUCH)
                 return
@@ -109,6 +110,7 @@ class TextProcessor(ActionProcessor):
                 return
             donate_id = int(self.status.split(":")[1])
             donate = Donate.objects.get(id=donate_id)
+            self.bot.edit_message_reply_markup(self.chat_id, donate.bot_message_id)
             self._provide_donate_amounts(donate, float_amount)
             self.update_status("rzhomber")
             self.bot.send_message(

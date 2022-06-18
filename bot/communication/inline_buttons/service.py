@@ -74,12 +74,29 @@ class InlineProcessor(ActionProcessor):
         found_memes.search_request = search_request
         return found_memes
 
+    @staticmethod
+    def _add_amount_to_bet(bet: Bet, amount: int):
+        bet.amount = float(amount)
+        bet.save()
+
+    @staticmethod
+    def _provide_donate_amounts(donate: Donate, float_amount: float):
+        donate.amount, donate.to_user.coins, donate.from_user.coins = (
+            float_amount,
+            donate.to_user.coins + float_amount,
+            donate.from_user.coins - float_amount,
+        )
+        donate.save()
+        donate.to_user.save()
+        donate.from_user.save()
+
     def process_bet_target_user(self):
         target_user_id = int(self.action.data.split(":")[1])
         target_user = User.objects.get(id=target_user_id)
         bet = self._get_bet()
         self._add_target_user_to_bet(target_user, bet)
         self.update_status(f"waiting_bet_amount:{bet.id}")
+        reply_markup = self.markup.get_default_bet_amount(bet.id)
         self.bot.edit_message_text(
             text.SEND_AMOUNT.format(
                 get_readable_balance(self.database_user.coins),
@@ -89,6 +106,7 @@ class InlineProcessor(ActionProcessor):
             self.chat_id,
             self.message_id,
             parse_mode="HTML",
+            reply_markup=reply_markup
         )
 
     def process_haha_call(self):
@@ -170,12 +188,14 @@ class InlineProcessor(ActionProcessor):
             return
         self._add_donate_to_user(donate_to_user, donate)
         self.update_status(f"donate_amount:{donate_id}")
+        reply_markup = self.markup.get_default_donate_amount()
         self.bot.edit_message_text(
             text.SEND_DONATE_AMOUNT.format(
                 get_readable_balance(self.database_user.coins)
             ),
             self.chat_id,
             self.message_id,
+            reply_markup=reply_markup
         )
 
     def process_turn_over_page(self):
@@ -234,3 +254,58 @@ class InlineProcessor(ActionProcessor):
             self.bot.edit_message_text(
                 f"Словил ошибку при скачивании: {error.__class__.__name__}\n\n{error}"
             )
+
+    def process_default_bet_amount_call(self):
+        _, bet_id, amount = self.call_data.split(':')
+        bet_id = int(bet_id)
+        if amount == "full":
+            amount = self.database_user.coins
+        else:
+            amount = int(amount)
+        bet = Bet.objects.get(id=bet_id)
+        if amount > self.database_user.coins:
+            self.bot.answer_callback_query(self.call_id, text.TOO_MUCH_CALLBACK, True)
+            return
+        elif amount > bet.bet_target_user.coins:
+            self.bot.answer_callback_query(
+                self.call_id,
+                text.TOO_MUCH_TARGET_CALLBACK.format(bet.bet_target_user.username),
+                True
+            )
+            return
+        self._add_amount_to_bet(bet, amount)
+        self.bot.edit_message_reply_markup(self.chat_id, self.message_id)
+        reply_markup = self.markup.funny_or_not(bet.id)
+        self.bot.send_message(
+            self.chat_id,
+            text.CALL_TARGET_USER.format(
+                get_mention_user(bet.user),
+                get_mention_user(bet.bet_target_user),
+            ),
+            reply_markup=reply_markup,
+            parse_mode="HTML",
+        )
+        self.update_status("rzhomber")
+
+    def process_default_donate_call(self):
+        if self.call_data == "full":
+            amount = self.database_user.coins
+        else:
+            amount = int(self.call_data.split(":")[1])
+        if amount > self.database_user.coins:
+            self.bot.answer_callback_query(self.call_id, text.DONATE_TOO_MUCH_AMOUNT_CALLBACK, True)
+            return
+        donate_id = int(self.status.split(":")[1])
+        donate = Donate.objects.get(id=donate_id)
+        self._provide_donate_amounts(donate, amount)
+        self.update_status("rzhomber")
+        self.bot.edit_message_reply_markup(self.chat_id, self.message_id)
+        self.bot.send_message(
+            self.chat_id,
+            text.DONATE_FINISHED.format(
+                get_readable_balance(donate.from_user.coins),
+                get_mention_user(donate.to_user),
+                get_readable_balance(donate.to_user.coins),
+            ),
+            parse_mode="HTML",
+        )
