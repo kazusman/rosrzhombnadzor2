@@ -258,11 +258,14 @@ class InlineProcessor(ActionProcessor):
     def process_default_bet_amount_call(self):
         _, bet_id, amount = self.call_data.split(':')
         bet_id = int(bet_id)
+        bet = Bet.objects.get(id=bet_id)
+        if self.database_user != bet.user:
+            self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
+            return
         if amount == "full":
             amount = self.database_user.coins
         else:
             amount = int(amount)
-        bet = Bet.objects.get(id=bet_id)
         if amount > self.database_user.coins:
             self.bot.answer_callback_query(self.call_id, text.TOO_MUCH_CALLBACK, True)
             return
@@ -288,6 +291,11 @@ class InlineProcessor(ActionProcessor):
         self.update_status("rzhomber")
 
     def process_default_donate_call(self):
+        donate_id = int(self.status.split(":")[1])
+        donate = Donate.objects.get(id=donate_id)
+        if self.database_user != donate.from_user:
+            self.bot.answer_callback_query(self.call_id, text.DO_NOT_PRESS_BUTTON, True)
+            return
         if self.call_data == "full":
             amount = self.database_user.coins
         else:
@@ -295,8 +303,6 @@ class InlineProcessor(ActionProcessor):
         if amount > self.database_user.coins:
             self.bot.answer_callback_query(self.call_id, text.DONATE_TOO_MUCH_AMOUNT_CALLBACK, True)
             return
-        donate_id = int(self.status.split(":")[1])
-        donate = Donate.objects.get(id=donate_id)
         self._provide_donate_amounts(donate, amount)
         self.update_status("rzhomber")
         self.bot.edit_message_reply_markup(self.chat_id, self.message_id)
