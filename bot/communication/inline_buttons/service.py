@@ -121,6 +121,7 @@ class InlineProcessor(ActionProcessor):
             self._update_balances(author_new_amount, target_user_amount, bet)
             self.bot.edit_message_text(
                 text.BET_FINISHED_HAHA.format(
+                    get_readable_balance(bet.amount),
                     get_mention_user(bet.user),
                     get_readable_balance(bet.user.coins),
                     get_mention_user(self.database_user),
@@ -143,6 +144,7 @@ class InlineProcessor(ActionProcessor):
             self._update_balances(author_new_amount, target_user_amount, bet)
             self.bot.edit_message_text(
                 text.BET_FINISHED_NOT_HAHA.format(
+                    get_readable_balance(bet.amount),
                     get_mention_user(bet.user),
                     get_readable_balance(bet.user.coins),
                     get_mention_user(self.database_user),
@@ -311,6 +313,7 @@ class InlineProcessor(ActionProcessor):
         self.bot.send_message(
             self.chat_id,
             text.DONATE_FINISHED.format(
+                get_readable_balance(amount),
                 get_readable_balance(donate.from_user.coins),
                 get_mention_user(donate.to_user),
                 get_readable_balance(donate.to_user.coins),

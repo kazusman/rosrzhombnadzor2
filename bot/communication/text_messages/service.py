@@ -116,6 +116,7 @@ class TextProcessor(ActionProcessor):
             self.bot.send_message(
                 self.chat_id,
                 text.DONATE_FINISHED.format(
+                    get_readable_balance(float_amount),
                     get_readable_balance(donate.from_user.coins),
                     get_mention_user(donate.to_user),
                     get_readable_balance(donate.to_user.coins),
