@@ -31,7 +31,7 @@ class Paginator:
         self, total_amount: int, start_position: int = 0, end_position: int = 25
     ) -> str:
         messages_list = f"Найдено резульатов: {total_amount}\n\n"
-        russian_message_types = {"photo": "Картинка", "video": "Видео"}
+        russian_message_types = {"photo": "Фото", "video": "Видео"}
         for i, message in enumerate(
             self.messages[start_position:end_position], start_position + 1
         ):
@@ -46,7 +46,7 @@ class Paginator:
             )
             messages_list += (
                 f'<code>{i}.{spaces}</code><a href="{settings.CHAT_URL}/{message.message_id}">'
-                f"{russian_message_types[message.message_type]}</a> от "
+                f"{russian_message_types[message.message_type]}</a> "
                 f"{get_readable_date(message.created_at)} ({author_name})\n"
             )
         return messages_list
