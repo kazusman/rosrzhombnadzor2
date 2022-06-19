@@ -54,7 +54,11 @@ def get_readable_date(date: datetime) -> str:
         month = f"0{date.month}"
     else:
         month = date.month
-    return f"{date.day}.{month}.{str(date.year)[2:]}"
+    if len(str(date.day)) == 1:
+        day = f"0{date.day}"
+    else:
+        day = date.day
+    return f"{day}.{month}.{str(date.year)[2:]}"
 
 
 class BotAction:
