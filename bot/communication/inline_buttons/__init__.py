@@ -86,13 +86,17 @@ def download_call(call: types.CallbackQuery):
     InlineProcessor(call).process_download_video_call()
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith("default_bet_amount"))
+@bot.callback_query_handler(
+    func=lambda call: call.data.startswith("default_bet_amount")
+)
 def default_bet_amount_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_default_bet_amount_call()
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith("default_donate_amount"))
+@bot.callback_query_handler(
+    func=lambda call: call.data.startswith("default_donate_amount")
+)
 def default_donate_amount_call(call: types.CallbackQuery):
 
     InlineProcessor(call).process_default_donate_call()

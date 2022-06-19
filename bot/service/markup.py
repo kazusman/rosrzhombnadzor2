@@ -5,10 +5,10 @@ from telebot.types import InlineKeyboardButton
 from telebot.types import InlineKeyboardMarkup
 from telebot.types import ReplyKeyboardMarkup
 
-from bot.models import SearchRequest
-from bot.models import User
 from bot.models import DefaultBetAmount
 from bot.models import DefaultDonateAmount
+from bot.models import SearchRequest
+from bot.models import User
 
 
 class Markup:
@@ -159,24 +159,48 @@ class Markup:
         markup = InlineKeyboardMarkup(row_width=3)
         user_default_bet_amounts = DefaultBetAmount.objects.filter(user=self.user)
         if user_default_bet_amounts:
-            amounts_as_row = user_default_bet_amounts.first().amount.replace(" ", "").replace(".", ",")
+            amounts_as_row = (
+                user_default_bet_amounts.first()
+                .amount.replace(" ", "")
+                .replace(".", ",")
+            )
             if "," in amounts_as_row:
                 amounts = amounts_as_row.split(",")
             else:
                 amounts = [amounts_as_row]
-            buttons = [InlineKeyboardButton(amount, callback_data=f"default_bet_amount:{bet_id}:{amount}")
-                       for amount in amounts]
-            buttons.append(InlineKeyboardButton("Ва-банк", callback_data=f"default_bet_amount:{bet_id}:full"))
+            buttons = [
+                InlineKeyboardButton(
+                    amount, callback_data=f"default_bet_amount:{bet_id}:{amount}"
+                )
+                for amount in amounts
+            ]
+            buttons.append(
+                InlineKeyboardButton(
+                    "Ва-банк", callback_data=f"default_bet_amount:{bet_id}:full"
+                )
+            )
             markup.add(*buttons)
             return markup
         else:
             buttons = [
-                InlineKeyboardButton("100", callback_data=f"default_bet_amount:{bet_id}:100"),
-                InlineKeyboardButton("300", callback_data=f"default_bet_amount:{bet_id}:300"),
-                InlineKeyboardButton("500", callback_data=f"default_bet_amount:{bet_id}:500"),
-                InlineKeyboardButton("1000", callback_data=f"default_bet_amount:{bet_id}:1000"),
-                InlineKeyboardButton("2000", callback_data=f"default_bet_amount:{bet_id}:2000"),
-                InlineKeyboardButton("Ва-банк", callback_data=f"default_bet_amount:{bet_id}:full")
+                InlineKeyboardButton(
+                    "100", callback_data=f"default_bet_amount:{bet_id}:100"
+                ),
+                InlineKeyboardButton(
+                    "300", callback_data=f"default_bet_amount:{bet_id}:300"
+                ),
+                InlineKeyboardButton(
+                    "500", callback_data=f"default_bet_amount:{bet_id}:500"
+                ),
+                InlineKeyboardButton(
+                    "1000", callback_data=f"default_bet_amount:{bet_id}:1000"
+                ),
+                InlineKeyboardButton(
+                    "2000", callback_data=f"default_bet_amount:{bet_id}:2000"
+                ),
+                InlineKeyboardButton(
+                    "Ва-банк", callback_data=f"default_bet_amount:{bet_id}:full"
+                ),
             ]
             markup.add(*buttons)
         return markup
@@ -185,14 +209,26 @@ class Markup:
         markup = InlineKeyboardMarkup(row_width=3)
         user_default_donate_amounts = DefaultDonateAmount.objects.filter(user=self.user)
         if user_default_donate_amounts:
-            amounts_as_row = user_default_donate_amounts.first().amount.replace(" ", "").replace(".", ",")
+            amounts_as_row = (
+                user_default_donate_amounts.first()
+                .amount.replace(" ", "")
+                .replace(".", ",")
+            )
             if "," in amounts_as_row:
                 amounts = amounts_as_row.split(",")
             else:
                 amounts = [amounts_as_row]
-            buttons = [InlineKeyboardButton(amount, callback_data=f"default_donate_amount:{amount}")
-                       for amount in amounts]
-            buttons.append(InlineKeyboardButton("Ва-банк", callback_data=f"default_donate_amount:full"))
+            buttons = [
+                InlineKeyboardButton(
+                    amount, callback_data=f"default_donate_amount:{amount}"
+                )
+                for amount in amounts
+            ]
+            buttons.append(
+                InlineKeyboardButton(
+                    "Ва-банк", callback_data=f"default_donate_amount:full"
+                )
+            )
             markup.add(*buttons)
             return markup
         else:
@@ -200,9 +236,15 @@ class Markup:
                 InlineKeyboardButton("100", callback_data=f"default_donate_amount:100"),
                 InlineKeyboardButton("300", callback_data=f"default_donate_amount:300"),
                 InlineKeyboardButton("500", callback_data=f"default_donate_amount:500"),
-                InlineKeyboardButton("1000", callback_data=f"default_donate_amount:1000"),
-                InlineKeyboardButton("2000", callback_data=f"default_donate_amount:2000"),
-                InlineKeyboardButton("Ва-банк", callback_data=f"default_donate_amount:full")
+                InlineKeyboardButton(
+                    "1000", callback_data=f"default_donate_amount:1000"
+                ),
+                InlineKeyboardButton(
+                    "2000", callback_data=f"default_donate_amount:2000"
+                ),
+                InlineKeyboardButton(
+                    "Ва-банк", callback_data=f"default_donate_amount:full"
+                ),
             ]
             markup.add(*buttons)
         return markup

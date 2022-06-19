@@ -106,7 +106,7 @@ class InlineProcessor(ActionProcessor):
             self.chat_id,
             self.message_id,
             parse_mode="HTML",
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
         )
 
     def process_haha_call(self):
@@ -197,7 +197,7 @@ class InlineProcessor(ActionProcessor):
             ),
             self.chat_id,
             self.message_id,
-            reply_markup=reply_markup
+            reply_markup=reply_markup,
         )
 
     def process_turn_over_page(self):
@@ -259,7 +259,7 @@ class InlineProcessor(ActionProcessor):
 
     def process_default_bet_amount_call(self):
         try:
-            _, bet_id, amount = self.call_data.split(':')
+            _, bet_id, amount = self.call_data.split(":")
             bet_id = int(bet_id)
             bet = Bet.objects.get(id=bet_id)
         except ValueError:
@@ -276,7 +276,7 @@ class InlineProcessor(ActionProcessor):
             self.bot.answer_callback_query(
                 self.call_id,
                 text.TOO_MUCH_TARGET_CALLBACK.format(bet.bet_target_user.username),
-                True
+                True,
             )
             return
         self._add_amount_to_bet(bet, amount)
@@ -305,7 +305,9 @@ class InlineProcessor(ActionProcessor):
         else:
             amount = int(self.call_data.split(":")[1])
         if amount > self.database_user.coins:
-            self.bot.answer_callback_query(self.call_id, text.DONATE_TOO_MUCH_AMOUNT_CALLBACK, True)
+            self.bot.answer_callback_query(
+                self.call_id, text.DONATE_TOO_MUCH_AMOUNT_CALLBACK, True
+            )
             return
         self._provide_donate_amounts(donate, amount)
         self.update_status("rzhomber")

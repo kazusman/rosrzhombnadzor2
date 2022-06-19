@@ -1,8 +1,8 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import truncatechars
-from django.contrib.postgres.fields import ArrayField
 
 
 ON_DELETE_VALUE = {True: models.CASCADE, False: models.RESTRICT}
@@ -54,18 +54,26 @@ def default_amount_validator(value: str):
     if "," in value:
         values = value.split(",")
         if len(values) > 5:
-            raise ValidationError("Максимальное количество дефолтных сумм не должно быть больше 5")
+            raise ValidationError(
+                "Максимальное количество дефолтных сумм не должно быть больше 5"
+            )
         for amount in values:
             if not is_int(amount):
-                raise ValidationError(f"Нужно указать целочесленные значения, а указана хуйня типа '{amount}'")
+                raise ValidationError(
+                    f"Нужно указать целочесленные значения, а указана хуйня типа '{amount}'"
+                )
             if len(amount) > 5:
-                raise ValidationError(f"{amount} — слишком длинное число, максимум 5 символов")
+                raise ValidationError(
+                    f"{amount} — слишком длинное число, максимум 5 символов"
+                )
             if int(amount) < 1:
                 raise ValidationError("Сумма не может быть меньше 1 Ржомбакоина")
 
     else:
         if not is_int(value):
-            raise ValidationError(f"Нужно указать целочесленные значения, а указана хуйня типа '{value}'")
+            raise ValidationError(
+                f"Нужно указать целочесленные значения, а указана хуйня типа '{value}'"
+            )
 
 
 def percent_probability_validator(value):
@@ -371,9 +379,7 @@ class Donate(models.Model):
     created_at = models.DateTimeField(verbose_name="Created at", auto_now_add=True)
 
     bot_message_id = models.IntegerField(
-        verbose_name="Bot message id",
-        null=True,
-        blank=True
+        verbose_name="Bot message id", null=True, blank=True
     )
 
     class Meta:
@@ -440,15 +446,11 @@ class DownloadRequest(models.Model):
 class DefaultBetAmount(models.Model):
 
     user = models.OneToOneField(
-        verbose_name="User",
-        to=User,
-        on_delete=ON_DELETE_VALUE[settings.DEBUG]
+        verbose_name="User", to=User, on_delete=ON_DELETE_VALUE[settings.DEBUG]
     )
 
     amount = models.CharField(
-        verbose_name="Amount",
-        max_length=128,
-        validators=[default_amount_validator]
+        verbose_name="Amount", max_length=128, validators=[default_amount_validator]
     )
 
     class Meta:
@@ -461,15 +463,11 @@ class DefaultBetAmount(models.Model):
 
 class DefaultDonateAmount(models.Model):
     user = models.OneToOneField(
-        verbose_name="User",
-        to=User,
-        on_delete=ON_DELETE_VALUE[settings.DEBUG]
+        verbose_name="User", to=User, on_delete=ON_DELETE_VALUE[settings.DEBUG]
     )
 
     amount = models.CharField(
-        verbose_name="Amount",
-        max_length=128,
-        validators=[default_amount_validator]
+        verbose_name="Amount", max_length=128, validators=[default_amount_validator]
     )
 
     class Meta:

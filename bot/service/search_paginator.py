@@ -1,5 +1,4 @@
 import math
-from typing import Optional
 
 from django.conf import settings
 from django.db.models import Q
@@ -7,7 +6,6 @@ from django.db.models import QuerySet
 
 from bot.models import Message
 from bot.models import SearchRequest
-from bot.models import Status
 from bot.models import User
 from bot.service import get_readable_date
 from bot.service.markup import Markup
@@ -41,10 +39,15 @@ class Paginator:
                 spaces = "  "
             else:
                 spaces = " "
+            author_name = (
+                message.user.username
+                if message.user.username
+                else message.user.first_name
+            )
             messages_list += (
                 f'<code>{i}.{spaces}</code><a href="{settings.CHAT_URL}/{message.message_id}">'
                 f"{russian_message_types[message.message_type]}</a> от "
-                f"{get_readable_date(message.created_at)}\n"
+                f"{get_readable_date(message.created_at)} ({author_name})\n"
             )
         return messages_list
 

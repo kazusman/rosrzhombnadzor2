@@ -50,21 +50,11 @@ def get_years_decade(user: User) -> str:
 
 
 def get_readable_date(date: datetime) -> str:
-    month_names = {
-        1: "января",
-        2: "февраля",
-        3: "марта",
-        4: "апреля",
-        5: "мая",
-        6: "июня",
-        7: "июля",
-        8: "августа",
-        9: "сентября",
-        10: "октября",
-        11: "ноября",
-        12: "декабря",
-    }
-    return f"{date.day} {month_names[date.month]} {date.year} г."
+    if len(str(date.month)) == 1:
+        month = f"0{date.month}"
+    else:
+        month = date.month
+    return f"{date.day}.{month}.{str(date.year)[2:]}"
 
 
 class BotAction:

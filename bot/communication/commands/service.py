@@ -49,7 +49,9 @@ class CommandProcessor(ActionProcessor):
         )
 
     def _create_donate(self, message_id: int, to_user: Optional[User] = None) -> Donate:
-        return Donate.objects.create(from_user=self.database_user, to_user=to_user, bot_message_id=message_id)
+        return Donate.objects.create(
+            from_user=self.database_user, to_user=to_user, bot_message_id=message_id
+        )
 
     def _get_replied_message(self) -> Optional[Message]:
         try:
@@ -152,7 +154,7 @@ class CommandProcessor(ActionProcessor):
                         text.SEND_DONATE_AMOUNT.format(
                             get_readable_balance(self.database_user.coins)
                         ),
-                        reply_markup=reply_markup
+                        reply_markup=reply_markup,
                     )
                     donate = self._create_donate(bot_message.id, message.user)
                     self.update_status(f"donate_amount:{donate.id}")
