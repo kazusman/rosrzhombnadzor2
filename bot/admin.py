@@ -178,3 +178,13 @@ class DefaultDonateAmountAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "amount")
 
     list_display_links = list_display
+
+
+@admin.register(Request)
+class RequestAdmin(admin.ModelAdmin):
+
+    list_display = ("id", "user", "action_type", "created_at")
+
+    list_display_links = list_display
+
+    list_filter = ("user",)
