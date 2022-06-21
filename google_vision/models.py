@@ -1,12 +1,14 @@
 import json
+
 from django.conf import settings
 from django.db import models
+from django.utils.safestring import mark_safe
 from pygments import highlight
-from pygments.lexers.data import JsonLexer
 from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.data import JsonLexer
+
 from bot.models import Message
 from bot.models import ON_DELETE_VALUE
-from django.utils.safestring import mark_safe
 
 
 class Request(models.Model):
@@ -24,12 +26,12 @@ class Request(models.Model):
 
     def pretty_json(self):
         response = json.dumps(self.response, indent=2, ensure_ascii=False)
-        formatter = HtmlFormatter(style='colorful')
+        formatter = HtmlFormatter(style="colorful")
         response = highlight(response, JsonLexer(), formatter)
         style = "<style>" + formatter.get_style_defs() + "</style><br>"
         return mark_safe(style + response)
 
-    pretty_json.short_description = 'Pretty json'
+    pretty_json.short_description = "Pretty json"
     pretty_json.allow_tags = True
 
     class Meta:

@@ -10,9 +10,9 @@ from telebot import types  # noqa
 
 from bot.config import bot
 from bot.models import Message
+from bot.models import Request
 from bot.models import Status
 from bot.models import User
-from bot.models import Request
 from bot.service.decorators import check_chat
 from bot.service.markup import Markup
 from google_vision.service import SpeechToTextAPI
@@ -224,12 +224,16 @@ class ActionProcessor(BotUser):
     )
 
     def _save_request(self):
-        action_json = self.action.json if isinstance(self.action, types.Message) else self.action.message.json
-        action_type = "Message" if isinstance(self.action, types.Message) else "Callback"
+        action_json = (
+            self.action.json
+            if isinstance(self.action, types.Message)
+            else self.action.message.json
+        )
+        action_type = (
+            "Message" if isinstance(self.action, types.Message) else "Callback"
+        )
         Request.objects.create(
-            user=self.database_user,
-            data=action_json,
-            action_type=action_type
+            user=self.database_user, data=action_json, action_type=action_type
         )
 
     @staticmethod

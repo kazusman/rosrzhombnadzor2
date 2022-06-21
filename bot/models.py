@@ -1,15 +1,14 @@
 import json
 
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import truncatechars
-
-from pygments import highlight
-from pygments.lexers.data import JsonLexer
-from pygments.formatters.html import HtmlFormatter
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.data import JsonLexer
 
 
 ON_DELETE_VALUE = {True: models.CASCADE, False: models.RESTRICT}
@@ -214,7 +213,7 @@ class Message(models.Model):
     json_body = models.JSONField(null=True, blank=True, verbose_name="JSON Body")
 
     def view_in_chat(self):
-        return f"<a href='{settings.CHAT_URL}/{self.message_id}'>Клик</a>"
+        return format_html(f"<a href='{settings.CHAT_URL}/{self.message_id}'>Клик</a>")
 
     view_in_chat.short_description = "View in chat"
     view_in_chat.allow_tags = True
@@ -486,33 +485,25 @@ class DefaultDonateAmount(models.Model):
 class Request(models.Model):
 
     user = models.ForeignKey(
-        to=User,
-        on_delete=ON_DELETE_VALUE[settings.DEBUG],
-        verbose_name="User"
+        to=User, on_delete=ON_DELETE_VALUE[settings.DEBUG], verbose_name="User"
     )
 
     action_type = models.CharField(
-        max_length=16,
-        choices=[("Message", "Message"), ("Callback", "Callback")]
+        max_length=16, choices=[("Message", "Message"), ("Callback", "Callback")]
     )
 
-    data = models.JSONField(
-        verbose_name="Data"
-    )
+    data = models.JSONField(verbose_name="Data")
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Created at"
-    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     def pretty_json(self):
         response = json.dumps(self.data, indent=2, ensure_ascii=False)
-        formatter = HtmlFormatter(style='colorful')
+        formatter = HtmlFormatter(style="colorful")
         response = highlight(response, JsonLexer(), formatter)
         style = "<style>" + formatter.get_style_defs() + "</style><br>"
         return mark_safe(style + response)
 
-    pretty_json.short_description = 'Pretty json'
+    pretty_json.short_description = "Pretty json"
     pretty_json.allow_tags = True
 
     class Meta:
