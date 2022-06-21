@@ -70,7 +70,7 @@ class MessageAdmin(admin.ModelAdmin):
         "is_forwarded",
         "created_at",
         "message_id",
-        "content_text_preview",
+        "view_in_chat",
     )
 
     list_display_links = list_display

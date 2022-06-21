@@ -214,12 +214,10 @@ class Message(models.Model):
     json_body = models.JSONField(null=True, blank=True, verbose_name="JSON Body")
 
     @property
-    def content_text_preview(self):
-        if self.text_on_image is None:
-            return "-"
-        return truncatechars(self.text_on_image, 50)
+    def view_in_chat(self):
+        return f"<a href='{settings.CHAT_URL}/{self.message_id}'>Клик</a>"
 
-    content_text_preview.fget.short_description = "Content text preview"
+    view_in_chat.fget.short_description = "View in chat"
 
     class Meta:
         verbose_name = "Message"
