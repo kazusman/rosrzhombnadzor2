@@ -13,6 +13,7 @@ from bot.models import *
 from bot.service import ActionProcessor
 from bot.service import get_readable_balance
 from bot.service import text
+from bot.service.message_parser import Parser
 from bot.service.demotivator import DemotivatorMaker
 from google_vision.models import RecognitionType
 
@@ -266,3 +267,8 @@ class CommandProcessor(ActionProcessor):
                 self.bot.send_message(
                     self.chat_id, f"{error.__class__.__name__}\n\n{error}"
                 )
+
+    def process_parser_command(self):
+        if self.telegram_id == settings.ADMIN_TELEGRAM_ID:
+            parser = Parser(self.message_id + 1)
+            parser.parse()

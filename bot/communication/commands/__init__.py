@@ -72,3 +72,9 @@ def ben_command(message: types.Message):
 def download_command(message: types.Message):
 
     CommandProcessor(message).process_download_command()
+
+
+@bot.message_handler(commands=["parser"])
+def parser_command(message: types.Message):
+
+    CommandProcessor(message).process_parser_command()
