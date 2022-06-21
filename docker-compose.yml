@@ -22,35 +22,35 @@ services:
       - POSTGRES_DB=${DATABASE}
     ports:
       - "5432:5432"
-  nginx:
-    build: ./nginx
-    volumes:
-      - static_volume:/usr/src/app/staticfiles
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+  minio:
+    image: minio/minio
     ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - web
-    links:
-      - "web"
-  certbot:
-    image: certbot/certbot
+      - "${MINIO_API_PORT}:${MINIO_API_PORT}"
+      - "${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}"
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-  rabbit:
-    restart: always
-    image: "rabbitmq:3-management"
+      - ./storage/minio:/data
     environment:
-      RABBITMQ_NODENAME: "rabbit@localhost"
-      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-      RABBITMQ_DEFAULT_VHOST: "/"
-    ports:
-      - "15672:15672"
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ":${MINIO_CONSOLE_PORT}" --address 0.0.0.0:${MINIO_API_PORT}
+#  certbot:
+#    image: certbot/certbot
+#    volumes:
+#      - ./data/certbot/conf:/etc/letsencrypt
+#      - ./data/certbot/www:/var/www/certbot
+#  rabbit:
+#    restart: always
+#    image: "rabbitmq:3-management"
+#    environment:
+#      RABBITMQ_NODENAME: "rabbit@localhost"
+#      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+#      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+#      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+#      RABBITMQ_DEFAULT_VHOST: "/"
+#    ports:
+#      - "15672:15672"
 volumes:
   postgres_data:
   static_volume:

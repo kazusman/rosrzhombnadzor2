@@ -27,6 +27,7 @@ idna==3.3
 imageio==2.19.3
 imageio-ffmpeg==0.4.7
 kombu==5.2.3
+minio==7.1.9
 moviepy==1.0.3
 numpy==1.22.2
 opencv-python==4.5.5.62

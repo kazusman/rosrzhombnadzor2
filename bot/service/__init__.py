@@ -1,5 +1,6 @@
 import hashlib
 import os
+import io
 from datetime import datetime
 from random import choice
 from typing import Optional
@@ -9,6 +10,7 @@ from django.conf import settings
 from telebot import types  # noqa
 
 from bot.config import bot
+from bot.config import minio
 from bot.models import Message
 from bot.models import Request
 from bot.models import Status
@@ -301,6 +303,13 @@ class ActionProcessor(BotUser):
             photo_id = message.reply_to_message.photo[-1].file_id
         file_path = self.bot.get_file(photo_id).file_path
         file_bytes = self.bot.download_file(file_path)
+        file_as_stream = io.BytesIO(file_bytes)
+        bucket_name = str(self.chat_id)[4:]
+        found = minio.bucket_exists(bucket_name)
+        if not found:
+            minio.make_bucket(bucket_name)
+        minio.put_object(bucket_name, f"photo/{self.message_id}.png",
+                         data=file_as_stream, length=len(file_bytes))
         self._save_photo(file_bytes)
         return file_bytes
 

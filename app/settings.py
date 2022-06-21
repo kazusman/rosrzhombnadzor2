@@ -176,3 +176,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
 }
+
+
+MINIO_API_HOST = os.getenv("MINIO_API_HOST")
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
+MINIO_API_PORT = os.getenv("MINIO_API_PORT")

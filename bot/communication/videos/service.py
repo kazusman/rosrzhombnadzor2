@@ -1,4 +1,5 @@
 import os
+import io
 from typing import Union
 
 import cv2
@@ -6,6 +7,7 @@ from django.conf import settings
 from telebot import types  # noqa
 
 from bot.service import ActionProcessor
+from bot.config import minio
 
 
 class VideoProcessor(ActionProcessor):
@@ -46,6 +48,13 @@ class VideoProcessor(ActionProcessor):
             video_id = self.action.video.file_id
             file_path = self.bot.get_file(video_id).file_path
             file_bytes = self.bot.download_file(file_path)
+            file_as_stream = io.BytesIO(file_bytes)
+            bucket_name = str(self.chat_id)[4:]
+            found = minio.bucket_exists(bucket_name)
+            if not found:
+                minio.make_bucket(bucket_name)
+            minio.put_object(bucket_name, f"video/{self.message_id}.mp4",
+                             data=file_as_stream, length=len(file_bytes))
             with open(self.downloaded_video_path, "wb") as file:
                 file.write(file_bytes)
             self._extract_first_frame()
