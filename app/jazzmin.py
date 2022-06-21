@@ -13,7 +13,7 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         {"name": "Home", "url": "/admin"},
         {"name": "Set webhook", "url": f"/bot/set_webhook/"},
-        {"name": "Storage", "url": os.getenv("MINIO_MAIN_URL")}
+        {"name": "Storage", "url": os.getenv("MINIO_MAIN_URL")},
     ],
     "usermenu_links": None,
     "show_sidebar": True,

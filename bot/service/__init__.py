@@ -1,6 +1,6 @@
 import hashlib
-import os
 import io
+import os
 from datetime import datetime
 from random import choice
 from typing import Optional
@@ -308,8 +308,12 @@ class ActionProcessor(BotUser):
         found = minio.bucket_exists(bucket_name)
         if not found:
             minio.make_bucket(bucket_name)
-        minio.put_object(bucket_name, f"photo/{self.message_id}.png",
-                         data=file_as_stream, length=len(file_bytes))
+        minio.put_object(
+            bucket_name,
+            f"photo/{self.message_id}.png",
+            data=file_as_stream,
+            length=len(file_bytes),
+        )
         self._save_photo(file_bytes)
         return file_bytes
 
