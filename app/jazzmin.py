@@ -12,9 +12,8 @@ JAZZMIN_SETTINGS = {
     "search_model": None,
     "topmenu_links": [
         {"name": "Home", "url": "/admin"},
-        {"name": "Open bot", "url": os.getenv("BOT_URL"), "new_window": True},
         {"name": "Set webhook", "url": f"/bot/set_webhook/"},
-        {"app": "bot"},
+        {"name": "Storage", "url": os.getenv("MINIO_MAIN_URL")}
     ],
     "usermenu_links": None,
     "show_sidebar": True,
