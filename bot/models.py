@@ -476,3 +476,33 @@ class DefaultDonateAmount(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+class Request(models.Model):
+
+    user = models.ForeignKey(
+        to=User,
+        on_delete=ON_DELETE_VALUE[settings.DEBUG],
+        verbose_name="User"
+    )
+
+    action_type = models.CharField(
+        max_length=16,
+        choices=[("Message", "Message"), ("Callback", "Callback")]
+    )
+
+    data = models.JSONField(
+        verbose_name="Data"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Created at"
+    )
+
+    class Meta:
+        verbose_name = "Request"
+        verbose_name_plural = "Requests"
+
+    def __str__(self):
+        return f"{self.user} | {self.created_at}"

@@ -12,6 +12,7 @@ from bot.config import bot
 from bot.models import Message
 from bot.models import Status
 from bot.models import User
+from bot.models import Request
 from bot.service.decorators import check_chat
 from bot.service.markup import Markup
 from google_vision.service import SpeechToTextAPI
@@ -211,6 +212,7 @@ class ActionProcessor(BotUser):
         super().__init__(action)
         self.markup = Markup(self.database_user)
         self._get_last_status()
+        self._save_request()
 
     downloaded_file_path = os.path.join(
         settings.BASE_DIR,
@@ -220,6 +222,15 @@ class ActionProcessor(BotUser):
         "downloaded_files",
         "image.jpg",
     )
+
+    def _save_request(self):
+        action_json = self.action.json if isinstance(self.action, types.Message) else self.action.message.json
+        action_type = "Message" if isinstance(self.action, types.Message) else "Callback"
+        Request.objects.create(
+            user=self.database_user,
+            data=action_json,
+            action_type=action_type
+        )
 
     @staticmethod
     def get_md5_hash(file_bytes: bytes) -> str:
