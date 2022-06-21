@@ -75,6 +75,8 @@ class MessageAdmin(admin.ModelAdmin):
 
     list_display_links = list_display
 
+    search_fields = ("text_on_image", "text_from_audio")
+
     list_filter = ("user", "message_type", "is_forwarded", "created_at")
 
     readonly_fields = ("created_at",)
