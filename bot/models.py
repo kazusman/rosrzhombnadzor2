@@ -213,11 +213,11 @@ class Message(models.Model):
 
     json_body = models.JSONField(null=True, blank=True, verbose_name="JSON Body")
 
-    @property
     def view_in_chat(self):
         return f"<a href='{settings.CHAT_URL}/{self.message_id}'>Клик</a>"
 
-    view_in_chat.fget.short_description = "View in chat"
+    view_in_chat.short_description = "View in chat"
+    view_in_chat.allow_tags = True
 
     class Meta:
         verbose_name = "Message"
