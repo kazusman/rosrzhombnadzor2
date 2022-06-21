@@ -1,8 +1,15 @@
+import json
+
+
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import truncatechars
+
+from pygments import highlight
+from pygments.lexers.data import JsonLexer
+from pygments.formatters.html import HtmlFormatter
+from django.utils.safestring import mark_safe
 
 
 ON_DELETE_VALUE = {True: models.CASCADE, False: models.RESTRICT}
@@ -499,6 +506,16 @@ class Request(models.Model):
         auto_now_add=True,
         verbose_name="Created at"
     )
+
+    def pretty_json(self):
+        response = json.dumps(self.data, indent=2, ensure_ascii=False)
+        formatter = HtmlFormatter(style='colorful')
+        response = highlight(response, JsonLexer(), formatter)
+        style = "<style>" + formatter.get_style_defs() + "</style><br>"
+        return mark_safe(style + response)
+
+    pretty_json.short_description = 'Pretty json'
+    pretty_json.allow_tags = True
 
     class Meta:
         verbose_name = "Request"

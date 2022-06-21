@@ -1,9 +1,12 @@
+import json
 from django.conf import settings
 from django.db import models
-from django.template.defaultfilters import truncatechars
-
+from pygments import highlight
+from pygments.lexers.data import JsonLexer
+from pygments.formatters.html import HtmlFormatter
 from bot.models import Message
 from bot.models import ON_DELETE_VALUE
+from django.utils.safestring import mark_safe
 
 
 class Request(models.Model):
@@ -19,18 +22,22 @@ class Request(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
-    @property
-    def response_preview(self) -> str:
-        return truncatechars(str(self.response), 50)
+    def pretty_json(self):
+        response = json.dumps(self.response, indent=2, ensure_ascii=False)
+        formatter = HtmlFormatter(style='colorful')
+        response = highlight(response, JsonLexer(), formatter)
+        style = "<style>" + formatter.get_style_defs() + "</style><br>"
+        return mark_safe(style + response)
 
-    response_preview.fget.short_description = "Response preview"
+    pretty_json.short_description = 'Pretty json'
+    pretty_json.allow_tags = True
 
     class Meta:
         verbose_name = "Request"
         verbose_name_plural = "Requests"
 
     def __str__(self):
-        return self.response_preview
+        return str(self.response)[:50]
 
 
 class RecognitionType(models.Model):

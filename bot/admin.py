@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+
 from bot.models import *
 
 
@@ -188,3 +189,7 @@ class RequestAdmin(admin.ModelAdmin):
     list_display_links = list_display
 
     list_filter = ("user",)
+
+    exclude = ("data",)
+
+    readonly_fields = ("created_at", "pretty_json")
