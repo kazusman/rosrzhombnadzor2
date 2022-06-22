@@ -52,7 +52,7 @@ class Parser:
                 if message.content_type in ("photo", "video", "animation"):
                     self._download_file(message, message_id, message.content_type)
                     print(f"Скачан файл {message.content_type} с ID {message_id}")
-                    time.sleep(0.5)
+                time.sleep(0.25)
             except ApiTelegramException as error:
                 if str(error).endswith("the message can't be forwarded"):
                     continue
@@ -61,5 +61,9 @@ class Parser:
                     seconds_to_wait = int(error_text.split()[-1])
                     print(f"Слишком много запросов, ждём {seconds_to_wait} секунд")
                     time.sleep(seconds_to_wait)
+                elif str(error).endswith("message to forward not found"):
+                    print(f"Сообщение с ID {message_id} было удалено")
                 else:
                     print(error)
+            finally:
+                time.sleep(0.25)
