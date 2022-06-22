@@ -52,6 +52,7 @@ class Parser:
                 if message.content_type in ("photo", "video", "animation"):
                     self._download_file(message, message_id, message.content_type)
                     print(f"Скачан файл {message.content_type} с ID {message_id}")
+                    time.sleep(0.5)
             except ApiTelegramException as error:
                 if str(error).endswith("the message can't be forwarded"):
                     continue
