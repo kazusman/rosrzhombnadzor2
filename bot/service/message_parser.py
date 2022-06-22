@@ -58,6 +58,7 @@ class Parser:
                 elif "Too Many Requests" in str(error):
                     error_text = str(error).replace("\n", "")
                     seconds_to_wait = int(error_text.split()[-1])
+                    print(f"Слишком много запросов, ждём {seconds_to_wait} секунд")
                     time.sleep(seconds_to_wait)
                 else:
                     print(error)
