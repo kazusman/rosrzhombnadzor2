@@ -10,8 +10,9 @@ from bot.config import minio
 
 
 class Parser:
-    def __init__(self, last_message_id: int):
+    def __init__(self, start_message_id: int, last_message_id: int):
         self.last_message_id = last_message_id
+        self.start_message_id = start_message_id
 
     @staticmethod
     def _download_file(message: types.Message, original_message_id, file_type: str):
@@ -43,7 +44,7 @@ class Parser:
         )
 
     def parse(self):
-        for message_id in range(self.last_message_id + 1):
+        for message_id in range(self.start_message_id, self.last_message_id + 1):
             try:
                 message = bot.forward_message(
                     settings.PARSER_CHAT_ID, settings.CHAT_ID, message_id
@@ -54,5 +55,9 @@ class Parser:
             except ApiTelegramException as error:
                 if str(error).endswith("the message can't be forwarded"):
                     continue
+                elif "Too Many Requests" in str(error):
+                    error_text = str(error).replace("\n", "")
+                    seconds_to_wait = int(error_text.split()[-1])
+                    time.sleep(seconds_to_wait)
                 else:
                     print(error)
