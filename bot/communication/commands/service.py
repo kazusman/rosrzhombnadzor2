@@ -4,18 +4,18 @@ from typing import Union
 
 from django.db.models import ObjectDoesNotExist
 from django.db.models import Q
+from PIL import Image
 from pytube import YouTube
 from pytube.exceptions import PytubeError
 from pytube.exceptions import RegexMatchError
 from telebot import types  # noqa
-from PIL import Image
 
 from bot.models import *
 from bot.service import ActionProcessor
 from bot.service import get_readable_balance
 from bot.service import text
-from bot.service.message_parser import Parser
 from bot.service.demotivator import DemotivatorMaker
+from bot.service.message_parser import Parser
 from google_vision.models import RecognitionType
 
 

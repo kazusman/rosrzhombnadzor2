@@ -1,9 +1,9 @@
-import time
 import io
+import time
 
 from django.conf import settings
-from telebot.apihelper import ApiTelegramException
 from telebot import types
+from telebot.apihelper import ApiTelegramException
 
 from bot.config import bot
 from bot.config import minio
@@ -24,11 +24,7 @@ class Parser:
             file_id = message.video.file_id
         else:
             file_id = message.animation.file_id
-        extension = {
-            "photo": "png",
-            "video": "mp4",
-            "animation": "mp4"
-        }
+        extension = {"photo": "png", "video": "mp4", "animation": "mp4"}
         file_path = bot.get_file(file_id).file_path
         file_bytes = bot.download_file(file_path)
         file_as_stream = io.BytesIO(file_bytes)
