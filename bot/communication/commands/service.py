@@ -8,6 +8,7 @@ from pytube import YouTube
 from pytube.exceptions import PytubeError
 from pytube.exceptions import RegexMatchError
 from telebot import types  # noqa
+from PIL import Image
 
 from bot.models import *
 from bot.service import ActionProcessor
@@ -78,6 +79,7 @@ class CommandProcessor(ActionProcessor):
         profile_photos = self.bot.get_user_profile_photos(self.telegram_id)
         if profile_photos.total_count == 0:
             self.bot.send_message(self.chat_id, text.CANNOT_MAKE_DEMOTIVATOR)
+            return
         else:
             file_id = profile_photos.photos[0][-1].file_id
             file_path = self.bot.get_file(file_id).file_path
@@ -89,6 +91,22 @@ class CommandProcessor(ActionProcessor):
         ).create_demotivator()
         with open(demotivator_path, "rb") as demotivator:
             self.bot.send_photo(self.chat_id, demotivator)
+
+    def _create_jpeg_with_avatar(self):
+        profile_photos = self.bot.get_user_profile_photos(self.telegram_id)
+        if profile_photos.total_count == 0:
+            self.bot.send_message(self.chat_id, text.CANNOT_MAKE_DEMOTIVATOR)
+            return
+        else:
+            file_id = profile_photos.photos[0][-1].file_id
+            file_path = self.bot.get_file(file_id).file_path
+            file_bytes = self.bot.download_file(file_path)
+            with open(self.downloaded_file_path, "wb") as image:
+                image.write(file_bytes)
+        image = Image.open(self.downloaded_file_path)
+        image.save(self.downloaded_file_path, "JPEG", quality=1)
+        with open(self.downloaded_file_path, "rb") as jpeg:
+            self.bot.send_photo(self.chat_id, jpeg)
 
     def process_start_command(self):
         message_text: str = choice(StartAnswer.objects.all()).answer
@@ -270,5 +288,18 @@ class CommandProcessor(ActionProcessor):
 
     def process_parser_command(self):
         if self.telegram_id == settings.ADMIN_TELEGRAM_ID:
-            parser = Parser(self.message_id + 1)
+            parser = Parser(0, self.message_id + 1)
             parser.parse()
+
+    def process_jpeg_command(self):
+        if self.action.reply_to_message is None:
+            self._create_jpeg_with_avatar()
+            return
+        if self.action.reply_to_message.content_type != "photo":
+            self._create_jpeg_with_avatar()
+            return
+        self.download_photo(self.action)
+        image = Image.open(self.downloaded_file_path)
+        image.save(self.downloaded_file_path, "JPEG", quality=1)
+        with open(self.downloaded_file_path, "rb") as jpeg:
+            self.bot.send_photo(self.chat_id, jpeg)

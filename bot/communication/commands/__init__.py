@@ -78,3 +78,9 @@ def download_command(message: types.Message):
 def parser_command(message: types.Message):
 
     CommandProcessor(message).process_parser_command()
+
+
+@bot.message_handler(commands=["jpeg"])
+def jpeg_message(message: types.Message):
+
+    CommandProcessor(message).process_jpeg_command()
