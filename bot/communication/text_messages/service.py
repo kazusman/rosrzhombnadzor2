@@ -1,7 +1,10 @@
 from random import choice
 from typing import Union
+from datetime import datetime
+from datetime import timedelta
 
 from telebot import types  # noqa
+from pytz import timezone
 
 from bot.models import *
 from bot.service import ActionProcessor
@@ -99,6 +102,19 @@ class TextProcessor(ActionProcessor):
         donate.to_user.save()
         donate.from_user.save()
 
+    @staticmethod
+    def _check_for_shit_eating(donate: Donate) -> bool:
+        search_datetime = datetime.now(timezone(settings.TIME_ZONE)) - timedelta(hours=1)
+        previous_donate = Donate.objects.filter(
+            created_at__gte=search_datetime,
+            from_user=donate.to_user,
+            to_user=donate.from_user,
+            amount=donate.amount
+        )
+        if previous_donate:
+            return True
+        return False
+
     def _process_donate_amount(self):
         if self._is_float():
             float_amount = round(float(self.amount), 2)
@@ -123,6 +139,8 @@ class TextProcessor(ActionProcessor):
                 ),
                 parse_mode="HTML",
             )
+            if self._check_for_shit_eating(donate):
+                self.bot.send_message(self.chat_id, text.EAT_SHIT_FOR_FREE)
         else:
             self.bot.send_message(self.chat_id, text.SEND_FLOAT_AMOUNT)
             self.update_status("rzhomber")

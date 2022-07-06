@@ -91,8 +91,8 @@ class InlineProcessor(ActionProcessor):
             return True
         return False
 
-
-    def _provide_donate_amounts(self, donate: Donate, float_amount: float):
+    @staticmethod
+    def _provide_donate_amounts(donate: Donate, float_amount: float):
         donate.amount, donate.to_user.coins, donate.from_user.coins = (
             float_amount,
             donate.to_user.coins + float_amount,
