@@ -1,11 +1,10 @@
 import os
 from datetime import datetime
+from datetime import timedelta
 from typing import Union
 
 from django.conf import settings
 from pytube import YouTube
-from pytube.exceptions import PytubeError
-from pytube.exceptions import RegexMatchError
 from pytz import timezone
 from telebot import types  # noqa
 
@@ -80,7 +79,20 @@ class InlineProcessor(ActionProcessor):
         bet.save()
 
     @staticmethod
-    def _provide_donate_amounts(donate: Donate, float_amount: float):
+    def _check_for_shit_eating(donate: Donate) -> bool:
+        search_datetime = datetime.now(timezone(settings.TIME_ZONE)) - timedelta(hours=1)
+        previous_donate = Donate.objects.filter(
+            created_at__gte=search_datetime,
+            from_user=donate.to_user,
+            to_user=donate.from_user,
+            amount=donate.amount
+        )
+        if previous_donate:
+            return True
+        return False
+
+
+    def _provide_donate_amounts(self, donate: Donate, float_amount: float):
         donate.amount, donate.to_user.coins, donate.from_user.coins = (
             float_amount,
             donate.to_user.coins + float_amount,
@@ -322,3 +334,5 @@ class InlineProcessor(ActionProcessor):
             ),
             parse_mode="HTML",
         )
+        if self._check_for_shit_eating(donate):
+            self.bot.send_message(self.chat_id, text.EAT_SHIT_FOR_FREE)
