@@ -103,7 +103,6 @@ class SmartAnswer:
             videos = [
                 "BAACAgIAAx0CZ5GD1AACCAtij1_db5K0QQJ_TYLE2qjDNUruOAACMhsAAohqeUjwsbuZC0NqaiQE",
                 "BAACAgIAAx0CZ5GD1AACCAxij2ABB4B6mAnBa3oEUxlKph6oFAACNRsAAohqeUh6mdJCA3GiRCQE",
-                "BAACAgIAAx0CZ5GD1AACCA1ij2AUmGMetmoPDrXHzVb3GuaKQwACNhsAAohqeUjmeeN6mDSwzyQE",
                 "BAACAgIAAx0CZ5GD1AACCA5ij2Am7svYi7jAL_gjZ3H3tP2plwACNxsAAohqeUie2dLcegvhpSQE",
             ]
             return choice(videos), "video"
